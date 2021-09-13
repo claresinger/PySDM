@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.attributes.ice.nucleation_sites API documentation</title>
+<title>PySDM.attributes.impl.dummy_attribute API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,18 +19,33 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.attributes.ice.nucleation_sites</code></h1>
+<h1 class="title">Module <code>PySDM.attributes.impl.dummy_attribute</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from ..impl import ExtensiveAttribute
+<pre><code class="python">from .attribute import Attribute
+import numpy as np
 
-class NucleationSites(ExtensiveAttribute):
-    def __init__(self, particles_builder):
-        super().__init__(particles_builder, name=&#39;nucleation sites&#39;)</code></pre>
+
+class DummyAttribute(Attribute):
+    def __init__(self, builder, name):
+        super().__init__(builder, name)
+
+    def allocate(self, idx):
+        super().allocate(idx)
+        self.data[:] = np.nan
+
+    def get(self):
+        return self.data
+
+
+def DummyAttributeImpl(name):
+    def _constructor(pb):
+        return DummyAttribute(pb, name=name)
+    return _constructor</code></pre>
 </details>
 </section>
 <section>
@@ -38,13 +53,10 @@ class NucleationSites(ExtensiveAttribute):
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.attributes.ice.nucleation_sites.NucleationSites"><code class="flex name class">
-<span>class <span class="ident">NucleationSites</span></span>
-<span>(</span><span>particles_builder)</span>
+<dt id="PySDM.attributes.impl.dummy_attribute.DummyAttributeImpl"><code class="name flex">
+<span>def <span class="ident">DummyAttributeImpl</span></span>(<span>name)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -52,16 +64,72 @@ class NucleationSites(ExtensiveAttribute):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class NucleationSites(ExtensiveAttribute):
-    def __init__(self, particles_builder):
-        super().__init__(particles_builder, name=&#39;nucleation sites&#39;)</code></pre>
+<pre><code class="python">def DummyAttributeImpl(name):
+    def _constructor(pb):
+        return DummyAttribute(pb, name=name)
+    return _constructor</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="PySDM.attributes.impl.dummy_attribute.DummyAttribute"><code class="flex name class">
+<span>class <span class="ident">DummyAttribute</span></span>
+<span>(</span><span>builder, name)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DummyAttribute(Attribute):
+    def __init__(self, builder, name):
+        super().__init__(builder, name)
+
+    def allocate(self, idx):
+        super().allocate(idx)
+        self.data[:] = np.nan
+
+    def get(self):
+        return self.data</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute" href="../impl/extensive_attribute.html#PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute">ExtensiveAttribute</a></li>
-<li><a title="PySDM.attributes.impl.base_attribute.BaseAttribute" href="../impl/base_attribute.html#PySDM.attributes.impl.base_attribute.BaseAttribute">BaseAttribute</a></li>
-<li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
+<li><a title="PySDM.attributes.impl.attribute.Attribute" href="attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.attributes.impl.dummy_attribute.DummyAttribute.allocate"><code class="name flex">
+<span>def <span class="ident">allocate</span></span>(<span>self, idx)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def allocate(self, idx):
+    super().allocate(idx)
+    self.data[:] = np.nan</code></pre>
+</details>
+</dd>
+<dt id="PySDM.attributes.impl.dummy_attribute.DummyAttribute.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self):
+    return self.data</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 </dl>
 </section>
@@ -74,13 +142,22 @@ class NucleationSites(ExtensiveAttribute):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.attributes.ice" href="index.html">PySDM.attributes.ice</a></code></li>
+<li><code><a title="PySDM.attributes.impl" href="index.html">PySDM.attributes.impl</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="PySDM.attributes.impl.dummy_attribute.DummyAttributeImpl" href="#PySDM.attributes.impl.dummy_attribute.DummyAttributeImpl">DummyAttributeImpl</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.attributes.ice.nucleation_sites.NucleationSites" href="#PySDM.attributes.ice.nucleation_sites.NucleationSites">NucleationSites</a></code></h4>
+<h4><code><a title="PySDM.attributes.impl.dummy_attribute.DummyAttribute" href="#PySDM.attributes.impl.dummy_attribute.DummyAttribute">DummyAttribute</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.attributes.impl.dummy_attribute.DummyAttribute.allocate" href="#PySDM.attributes.impl.dummy_attribute.DummyAttribute.allocate">allocate</a></code></li>
+<li><code><a title="PySDM.attributes.impl.dummy_attribute.DummyAttribute.get" href="#PySDM.attributes.impl.dummy_attribute.DummyAttribute.get">get</a></code></li>
+</ul>
 </li>
 </ul>
 </li>
