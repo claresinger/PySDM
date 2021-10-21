@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012 API documentation</title>
+<title>PySDM.physics.surface_tension.compressed_film_Ruehl API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012</code></h1>
+<h1 class="title">Module <code>PySDM.physics.surface_tension.compressed_film_Ruehl</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -28,28 +28,43 @@
 </summary>
 <pre><code class="python">from PySDM.physics import constants as const
 import numpy as np
+from scipy import constants as sci
+from scipy import optimize
 
-a = np.nan
-b = np.nan
+nu_org = np.nan
+A0 = np.nan
+C0 = np.nan
+m_sigma = np.nan
+sgm_min = np.nan
 
-
-class Niemand_et_al_2012:
-    def __str__(self):
-        return &#39;Niemand et al. 2012&#39;
-
-    def __init__(self):
-        assert np.isfinite(a)
-        assert np.isfinite(b)
+class CompressedFilm_Ruehl:
+    @staticmethod
+    def _check():
+        assert np.isfinite(nu_org)
+        assert np.isfinite(A0)
+        assert np.isfinite(C0)
+        assert np.isfinite(m_sigma)
+        assert np.isfinite(sgm_min)
 
     @staticmethod
-    def pdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
+    def sigma(T, v_wet, v_dry, f_org):
+        r_wet = ((3 * v_wet) / (4 * np.pi))**(1/3) # m - wet radius
 
-    @staticmethod
-    def cdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+        # C_bulk is the concentration of the organic in the bulk phase
+        Cb_iso = (f_org*v_dry/nu_org) / (v_wet/const.nu_w) # = C_bulk / (1-f_surf)
+
+        # A is the area that one molecule of organic occupies at the droplet surface
+        A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / nu_org) # m^2 = A*f_surf
+
+        # solve implicitly for fraction of organic at surface
+        f = lambda f_surf: Cb_iso*(1-f_surf) - C0*np.exp(((A0**2 - (A_iso/f_surf)**2)*m_sigma*sci.N_A)/(2*sci.R*T))
+        sol = optimize.root_scalar(f, bracket=[0,1])
+        f_surf = sol.root
+        
+        # calculate surface tension
+        sgm = const.sgm_w - (A0 - A_iso/f_surf)*m_sigma # m^2 * J/m^2 = J = N*m --&gt; N/m - N*m ?
+        sgm = np.minimum(np.maximum(sgm, sgm_min), const.sgm_w)
+        return sgm</code></pre>
 </details>
 </section>
 <section>
@@ -61,8 +76,8 @@ class Niemand_et_al_2012:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012"><code class="flex name class">
-<span>class <span class="ident">Niemand_et_al_2012</span></span>
+<dt id="PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl"><code class="flex name class">
+<span>class <span class="ident">CompressedFilm_Ruehl</span></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -70,28 +85,39 @@ class Niemand_et_al_2012:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Niemand_et_al_2012:
-    def __str__(self):
-        return &#39;Niemand et al. 2012&#39;
-
-    def __init__(self):
-        assert np.isfinite(a)
-        assert np.isfinite(b)
+<pre><code class="python">class CompressedFilm_Ruehl:
+    @staticmethod
+    def _check():
+        assert np.isfinite(nu_org)
+        assert np.isfinite(A0)
+        assert np.isfinite(C0)
+        assert np.isfinite(m_sigma)
+        assert np.isfinite(sgm_min)
 
     @staticmethod
-    def pdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
+    def sigma(T, v_wet, v_dry, f_org):
+        r_wet = ((3 * v_wet) / (4 * np.pi))**(1/3) # m - wet radius
 
-    @staticmethod
-    def cdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+        # C_bulk is the concentration of the organic in the bulk phase
+        Cb_iso = (f_org*v_dry/nu_org) / (v_wet/const.nu_w) # = C_bulk / (1-f_surf)
+
+        # A is the area that one molecule of organic occupies at the droplet surface
+        A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / nu_org) # m^2 = A*f_surf
+
+        # solve implicitly for fraction of organic at surface
+        f = lambda f_surf: Cb_iso*(1-f_surf) - C0*np.exp(((A0**2 - (A_iso/f_surf)**2)*m_sigma*sci.N_A)/(2*sci.R*T))
+        sol = optimize.root_scalar(f, bracket=[0,1])
+        f_surf = sol.root
+        
+        # calculate surface tension
+        sgm = const.sgm_w - (A0 - A_iso/f_surf)*m_sigma # m^2 * J/m^2 = J = N*m --&gt; N/m - N*m ?
+        sgm = np.minimum(np.maximum(sgm, sgm_min), const.sgm_w)
+        return sgm</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf"><code class="name flex">
-<span>def <span class="ident">cdf</span></span>(<span>T, A_insol)</span>
+<dt id="PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl.sigma"><code class="name flex">
+<span>def <span class="ident">sigma</span></span>(<span>T, v_wet, v_dry, f_org)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -100,24 +126,24 @@ class Niemand_et_al_2012:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def cdf(T, A_insol):
-    ns_T = np.exp(a * (T - const.T0) + b)
-    return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
-</details>
-</dd>
-<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf"><code class="name flex">
-<span>def <span class="ident">pdf</span></span>(<span>T, A_insol)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def pdf(T, A_insol):
-    ns_T = np.exp(a * (T - const.T0) + b)
-    return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)</code></pre>
+def sigma(T, v_wet, v_dry, f_org):
+    r_wet = ((3 * v_wet) / (4 * np.pi))**(1/3) # m - wet radius
+
+    # C_bulk is the concentration of the organic in the bulk phase
+    Cb_iso = (f_org*v_dry/nu_org) / (v_wet/const.nu_w) # = C_bulk / (1-f_surf)
+
+    # A is the area that one molecule of organic occupies at the droplet surface
+    A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / nu_org) # m^2 = A*f_surf
+
+    # solve implicitly for fraction of organic at surface
+    f = lambda f_surf: Cb_iso*(1-f_surf) - C0*np.exp(((A0**2 - (A_iso/f_surf)**2)*m_sigma*sci.N_A)/(2*sci.R*T))
+    sol = optimize.root_scalar(f, bracket=[0,1])
+    f_surf = sol.root
+    
+    # calculate surface tension
+    sgm = const.sgm_w - (A0 - A_iso/f_surf)*m_sigma # m^2 * J/m^2 = J = N*m --&gt; N/m - N*m ?
+    sgm = np.minimum(np.maximum(sgm, sgm_min), const.sgm_w)
+    return sgm</code></pre>
 </details>
 </dd>
 </dl>
@@ -133,16 +159,15 @@ def pdf(T, A_insol):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics.freezing_temperature_spectrum" href="index.html">PySDM.physics.freezing_temperature_spectrum</a></code></li>
+<li><code><a title="PySDM.physics.surface_tension" href="index.html">PySDM.physics.surface_tension</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012">Niemand_et_al_2012</a></code></h4>
+<h4><code><a title="PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl" href="#PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl">CompressedFilm_Ruehl</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf">cdf</a></code></li>
-<li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf">pdf</a></code></li>
+<li><code><a title="PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl.sigma" href="#PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl.sigma">sigma</a></code></li>
 </ul>
 </li>
 </ul>
