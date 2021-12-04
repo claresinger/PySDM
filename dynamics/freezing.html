@@ -27,6 +27,9 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from PySDM.physics.heterogeneous_ice_nucleation_rate import Null
+from PySDM.backends.impl_common.freezing_attributes import (
+    SingularAttributes, TimeDependentAttributes
+)
 
 
 class Freezing:
@@ -47,35 +50,43 @@ class Freezing:
             assert not isinstance(builder.formulae.heterogeneous_ice_nucleation_rate, Null)
             builder.request_attribute(&#34;immersed surface area&#34;)
             self.rand = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
-            self.rng = self.particulator.Random(self.particulator.n_sd, self.particulator.bck.formulae.seed)
+            self.rng = self.particulator.Random(
+                self.particulator.n_sd,
+                self.particulator.backend.formulae.seed
+            )
 
     def __call__(self):
         if &#39;Coalescence&#39; in self.particulator.dynamics:
-            raise NotImplementedError(&#34;handling T_fz during collisions not implemented yet&#34;)  # TODO #594
+            # TODO #594
+            raise NotImplementedError(&#34;handling T_fz during collisions not implemented yet&#34;)
 
         if not self.enable:
             return
 
         if self.singular:
-            self.particulator.bck.freeze_singular(
-                T_fz=self.particulator.attributes[&#39;freezing temperature&#39;],
-                v_wet=self.particulator.attributes[&#39;volume&#39;],
-                T=self.particulator.environment[&#39;T&#39;],
-                RH=self.particulator.environment[&#39;RH&#39;],
+            self.particulator.backend.freeze_singular(
+                attributes=SingularAttributes(
+                    freezing_temperature=self.particulator.attributes[&#39;freezing temperature&#39;],
+                    wet_volume=self.particulator.attributes[&#39;volume&#39;]
+                ),
+                temperature=self.particulator.environment[&#39;T&#39;],
+                relative_humidity=self.particulator.environment[&#39;RH&#39;],
                 cell=self.particulator.attributes[&#39;cell id&#39;]
             )
         else:
             self.rand.urand(self.rng)
-            self.particulator.bck.freeze_time_dependent(
+            self.particulator.backend.freeze_time_dependent(
                 rand=self.rand,
-                immersed_surface_area=self.particulator.attributes[&#39;immersed surface area&#39;],
-                volume=self.particulator.attributes[&#39;volume&#39;],
-                dt=self.particulator.dt,
+                attributes=TimeDependentAttributes(
+                    immersed_surface_area=self.particulator.attributes[&#39;immersed surface area&#39;],
+                    wet_volume=self.particulator.attributes[&#39;volume&#39;]
+                ),
+                timestep=self.particulator.dt,
                 cell=self.particulator.attributes[&#39;cell id&#39;],
                 a_w_ice=self.particulator.environment[&#39;a_w_ice&#39;]
             )
 
-        self.particulator.attributes.attributes[&#39;volume&#39;].mark_updated()</code></pre>
+        self.particulator.attributes.mark_updated(&#39;volume&#39;)</code></pre>
 </details>
 </section>
 <section>
@@ -115,35 +126,43 @@ class Freezing:
             assert not isinstance(builder.formulae.heterogeneous_ice_nucleation_rate, Null)
             builder.request_attribute(&#34;immersed surface area&#34;)
             self.rand = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
-            self.rng = self.particulator.Random(self.particulator.n_sd, self.particulator.bck.formulae.seed)
+            self.rng = self.particulator.Random(
+                self.particulator.n_sd,
+                self.particulator.backend.formulae.seed
+            )
 
     def __call__(self):
         if &#39;Coalescence&#39; in self.particulator.dynamics:
-            raise NotImplementedError(&#34;handling T_fz during collisions not implemented yet&#34;)  # TODO #594
+            # TODO #594
+            raise NotImplementedError(&#34;handling T_fz during collisions not implemented yet&#34;)
 
         if not self.enable:
             return
 
         if self.singular:
-            self.particulator.bck.freeze_singular(
-                T_fz=self.particulator.attributes[&#39;freezing temperature&#39;],
-                v_wet=self.particulator.attributes[&#39;volume&#39;],
-                T=self.particulator.environment[&#39;T&#39;],
-                RH=self.particulator.environment[&#39;RH&#39;],
+            self.particulator.backend.freeze_singular(
+                attributes=SingularAttributes(
+                    freezing_temperature=self.particulator.attributes[&#39;freezing temperature&#39;],
+                    wet_volume=self.particulator.attributes[&#39;volume&#39;]
+                ),
+                temperature=self.particulator.environment[&#39;T&#39;],
+                relative_humidity=self.particulator.environment[&#39;RH&#39;],
                 cell=self.particulator.attributes[&#39;cell id&#39;]
             )
         else:
             self.rand.urand(self.rng)
-            self.particulator.bck.freeze_time_dependent(
+            self.particulator.backend.freeze_time_dependent(
                 rand=self.rand,
-                immersed_surface_area=self.particulator.attributes[&#39;immersed surface area&#39;],
-                volume=self.particulator.attributes[&#39;volume&#39;],
-                dt=self.particulator.dt,
+                attributes=TimeDependentAttributes(
+                    immersed_surface_area=self.particulator.attributes[&#39;immersed surface area&#39;],
+                    wet_volume=self.particulator.attributes[&#39;volume&#39;]
+                ),
+                timestep=self.particulator.dt,
                 cell=self.particulator.attributes[&#39;cell id&#39;],
                 a_w_ice=self.particulator.environment[&#39;a_w_ice&#39;]
             )
 
-        self.particulator.attributes.attributes[&#39;volume&#39;].mark_updated()</code></pre>
+        self.particulator.attributes.mark_updated(&#39;volume&#39;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -166,7 +185,10 @@ class Freezing:
         assert not isinstance(builder.formulae.heterogeneous_ice_nucleation_rate, Null)
         builder.request_attribute(&#34;immersed surface area&#34;)
         self.rand = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
-        self.rng = self.particulator.Random(self.particulator.n_sd, self.particulator.bck.formulae.seed)</code></pre>
+        self.rng = self.particulator.Random(
+            self.particulator.n_sd,
+            self.particulator.backend.formulae.seed
+        )</code></pre>
 </details>
 </dd>
 </dl>

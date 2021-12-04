@@ -70,6 +70,7 @@ PySDM test-suite built using [pytest](https://docs.pytest.org/) is located in th
 from pkg_resources import get_distribution, DistributionNotFound, VersionConflict
 from .builder import Builder
 from .particulator import Particulator
+from .formulae import Formulae
 
 try:
     __version__ = get_distribution(__name__).version
@@ -89,8 +90,8 @@ except (DistributionNotFound, VersionConflict):
 </dd>
 <dt><code class="name"><a title="PySDM.backends" href="backends/index.html">PySDM.backends</a></code></dt>
 <dd>
-<div class="desc"><p>Backend classes: <code>CPU</code>=<code><a title="PySDM.backends.numba.numba.Numba" href="backends/numba/numba.html#PySDM.backends.numba.numba.Numba">Numba</a></code>
-and <code>GPU</code>=<code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC" href="backends/thrustRTC/thrustRTC.html#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC">ThrustRTC</a></code></p></div>
+<div class="desc"><p>Backend classes: <code>CPU</code>=<code>PySDM.backends.impl_numba.impl_numba.Numba</code>
+and <code>GPU</code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code></p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.builder" href="builder.html">PySDM.builder</a></code></dt>
 <dd>
@@ -113,12 +114,18 @@ and <code>GPU</code>=<code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRT
 <dd>
 <div class="desc"><p>Exporters module</p></div>
 </dd>
+<dt><code class="name"><a title="PySDM.formulae" href="formulae.html">PySDM.formulae</a></code></dt>
+<dd>
+<div class="desc"><p>Logic for enabling common CPU/GPU physics formulae code</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.impl" href="impl/index.html">PySDM.impl</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
 <dt><code class="name"><a title="PySDM.initialisation" href="initialisation/index.html">PySDM.initialisation</a></code></dt>
 <dd>
-<div class="desc"><p>Initialisation logic incl.
-<code><a title="PySDM.initialisation.spectral_sampling" href="initialisation/spectral_sampling.html">PySDM.initialisation.spectral_sampling</a></code>,
-<code><a title="PySDM.initialisation.spatial_sampling" href="initialisation/spatial_sampling.html">PySDM.initialisation.spatial_sampling</a></code>,
-<code>PySDM.initialisation.spectra</code></p></div>
+<div class="desc"><p>Initialisation logic particle size spectra, sampling methods and
+wet radii equilibration</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.particulator" href="particulator.html">PySDM.particulator</a></code></dt>
 <dd>
@@ -126,21 +133,13 @@ and <code>GPU</code>=<code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRT
 </dd>
 <dt><code class="name"><a title="PySDM.physics" href="physics/index.html">PySDM.physics</a></code></dt>
 <dd>
-<div class="desc"><p>Physical <code><a title="PySDM.physics.constants" href="physics/constants.html">PySDM.physics.constants</a></code> and <code><a title="PySDM.physics.formulae.Formulae" href="physics/formulae.html#PySDM.physics.formulae.Formulae">Formulae</a></code></p></div>
+<div class="desc"><p>Physical <code><a title="PySDM.physics.constants" href="physics/constants.html">PySDM.physics.constants</a></code> and <code>PySDM.physics.formulae.Formulae</code></p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products" href="products/index.html">PySDM.products</a></code></dt>
 <dd>
 <div class="desc"><p>Simulation output products such as:
-<code><a title="PySDM.products.state.particles_size_spectrum.ParticlesSizeSpectrum" href="products/state/particles_size_spectrum.html#PySDM.products.state.particles_size_spectrum.ParticlesSizeSpectrum">ParticlesSizeSpectrum</a></code>,
+<code>PySDM.products.state.particles_size_spectrum.ParticlesSizeSpectrum</code>,
 &hellip;</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.state" href="state/index.html">PySDM.state</a></code></dt>
-<dd>
-<div class="desc"><p>Classes representing system state: <code><a title="PySDM.state.particles.Particles" href="state/particles.html#PySDM.state.particles.Particles">Particles</a></code>, <code><a title="PySDM.state.mesh.Mesh" href="state/mesh.html#PySDM.state.mesh.Mesh">Mesh</a></code>, &hellip;</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.storages" href="storages/index.html">PySDM.storages</a></code></dt>
-<dd>
-<div class="desc"><p>Indirection layer adapting the interfaces of underlying array classes (<code>NumPy</code>.<code>ndarray</code> or <code>ThrustRTC</code>.<code>DVVector</code>)</p></div>
 </dd>
 </dl>
 </section>
@@ -165,12 +164,12 @@ and <code>GPU</code>=<code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRT
 <li><code><a title="PySDM.dynamics" href="dynamics/index.html">PySDM.dynamics</a></code></li>
 <li><code><a title="PySDM.environments" href="environments/index.html">PySDM.environments</a></code></li>
 <li><code><a title="PySDM.exporters" href="exporters/index.html">PySDM.exporters</a></code></li>
+<li><code><a title="PySDM.formulae" href="formulae.html">PySDM.formulae</a></code></li>
+<li><code><a title="PySDM.impl" href="impl/index.html">PySDM.impl</a></code></li>
 <li><code><a title="PySDM.initialisation" href="initialisation/index.html">PySDM.initialisation</a></code></li>
 <li><code><a title="PySDM.particulator" href="particulator.html">PySDM.particulator</a></code></li>
 <li><code><a title="PySDM.physics" href="physics/index.html">PySDM.physics</a></code></li>
 <li><code><a title="PySDM.products" href="products/index.html">PySDM.products</a></code></li>
-<li><code><a title="PySDM.state" href="state/index.html">PySDM.state</a></code></li>
-<li><code><a title="PySDM.storages" href="storages/index.html">PySDM.storages</a></code></li>
 </ul>
 </li>
 </ul>

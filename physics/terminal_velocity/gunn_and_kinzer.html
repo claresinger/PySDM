@@ -30,7 +30,7 @@
 import numpy as np
 from scipy.interpolate import Rbf
 from PySDM.physics import constants as const
-from PySDM.backends.numba import conf
+from PySDM.backends.impl_numba import conf
 
 
 class Interpolation:
@@ -59,9 +59,9 @@ class Interpolation:
         approximation_small = TpDependent.make(only_small=True)
         small_r_limit = small_r_limit or 40 * const.si.um
         approximation_small(u[1:], space[1:], small_r_limit)
-        self.a = particulator.bck.Storage.from_ndarray(u)
+        self.a = particulator.backend.Storage.from_ndarray(u)
         b = np.append(np.diff(u), [u[-1] - u[-2]]) / step
-        self.b = particulator.bck.Storage.from_ndarray(b)
+        self.b = particulator.backend.Storage.from_ndarray(b)
 
     def __call__(self, output, radius):
         self.particulator.backend.interpolation(output, radius, self.factor, self.a, self.b)
@@ -71,7 +71,9 @@ class RogersYau:
     &#34;&#34;&#34;
     Rogers &amp; Yau, equations: (8.5), (8.6), (8.8)
     &#34;&#34;&#34;
-    def __init__(self, particles, small_k=None, medium_k=None, large_k=None, small_r_limit=None, medium_r_limit=None):
+    def __init__(self, particles,
+                 small_k=None, medium_k=None, large_k=None,
+                 small_r_limit=None, medium_r_limit=None):
         si = const.si
         self.particles = particles
         self.small_k = small_k or 1.19e6 / si.cm / si.s
@@ -81,13 +83,16 @@ class RogersYau:
         self.medium_r_limit = medium_r_limit or 600 * si.um
 
     def __call__(self, output, radius):
-        self.particles.backend.terminal_velocity(output.data, radius.data, self.small_k, self.medium_k, self.large_k,
-                                                 self.small_r_limit, self.medium_r_limit)
+        self.particles.backend.terminal_velocity(
+            output.data, radius.data,
+            self.small_k, self.medium_k, self.large_k,
+            self.small_r_limit, self.medium_r_limit
+        )
 
 
 # TODO #348 implement in backend logic
 class TpDependent:
-    def __init__(self, particles, small_r_limit):
+    def __init__(self, _, small_r_limit):
         si = const.si
         self.small_r_limit = small_r_limit or 40 * si.um
         self.approximation = TpDependent.make()
@@ -121,7 +126,9 @@ class TpDependent:
         def f4(r):
             return (n0 / n) * (1 + 1.255 * l / r) / (1 + 1.255 * l0 / r)
 
-        c8 = np.array([6.5639, -1.0391, -1.4001, -0.82736, -0.34277, -0.083072, -0.010583, -0.00054208])
+        c8 = np.asarray(
+            (6.5639, -1.0391, -1.4001, -0.82736, -0.34277, -0.083072, -0.010583, -0.00054208)
+        )
 
         @numba.njit(**{**conf.JIT_FLAGS, &#34;cache&#34;: False, &#34;parallel&#34;: False})
         def f8(r):
@@ -193,9 +200,9 @@ class TpDependent:
         approximation_small = TpDependent.make(only_small=True)
         small_r_limit = small_r_limit or 40 * const.si.um
         approximation_small(u[1:], space[1:], small_r_limit)
-        self.a = particulator.bck.Storage.from_ndarray(u)
+        self.a = particulator.backend.Storage.from_ndarray(u)
         b = np.append(np.diff(u), [u[-1] - u[-2]]) / step
-        self.b = particulator.bck.Storage.from_ndarray(b)
+        self.b = particulator.backend.Storage.from_ndarray(b)
 
     def __call__(self, output, radius):
         self.particulator.backend.interpolation(output, radius, self.factor, self.a, self.b)</code></pre>
@@ -222,7 +229,9 @@ class TpDependent:
     &#34;&#34;&#34;
     Rogers &amp; Yau, equations: (8.5), (8.6), (8.8)
     &#34;&#34;&#34;
-    def __init__(self, particles, small_k=None, medium_k=None, large_k=None, small_r_limit=None, medium_r_limit=None):
+    def __init__(self, particles,
+                 small_k=None, medium_k=None, large_k=None,
+                 small_r_limit=None, medium_r_limit=None):
         si = const.si
         self.particles = particles
         self.small_k = small_k or 1.19e6 / si.cm / si.s
@@ -232,13 +241,16 @@ class TpDependent:
         self.medium_r_limit = medium_r_limit or 600 * si.um
 
     def __call__(self, output, radius):
-        self.particles.backend.terminal_velocity(output.data, radius.data, self.small_k, self.medium_k, self.large_k,
-                                                 self.small_r_limit, self.medium_r_limit)</code></pre>
+        self.particles.backend.terminal_velocity(
+            output.data, radius.data,
+            self.small_k, self.medium_k, self.large_k,
+            self.small_r_limit, self.medium_r_limit
+        )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.terminal_velocity.gunn_and_kinzer.TpDependent"><code class="flex name class">
 <span>class <span class="ident">TpDependent</span></span>
-<span>(</span><span>particles, small_r_limit)</span>
+<span>(</span><span>_, small_r_limit)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -247,7 +259,7 @@ class TpDependent:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TpDependent:
-    def __init__(self, particles, small_r_limit):
+    def __init__(self, _, small_r_limit):
         si = const.si
         self.small_r_limit = small_r_limit or 40 * si.um
         self.approximation = TpDependent.make()
@@ -281,7 +293,9 @@ class TpDependent:
         def f4(r):
             return (n0 / n) * (1 + 1.255 * l / r) / (1 + 1.255 * l0 / r)
 
-        c8 = np.array([6.5639, -1.0391, -1.4001, -0.82736, -0.34277, -0.083072, -0.010583, -0.00054208])
+        c8 = np.asarray(
+            (6.5639, -1.0391, -1.4001, -0.82736, -0.34277, -0.083072, -0.010583, -0.00054208)
+        )
 
         @numba.njit(**{**conf.JIT_FLAGS, &#34;cache&#34;: False, &#34;parallel&#34;: False})
         def f8(r):
@@ -344,7 +358,9 @@ def make(only_small=False):
     def f4(r):
         return (n0 / n) * (1 + 1.255 * l / r) / (1 + 1.255 * l0 / r)
 
-    c8 = np.array([6.5639, -1.0391, -1.4001, -0.82736, -0.34277, -0.083072, -0.010583, -0.00054208])
+    c8 = np.asarray(
+        (6.5639, -1.0391, -1.4001, -0.82736, -0.34277, -0.083072, -0.010583, -0.00054208)
+    )
 
     @numba.njit(**{**conf.JIT_FLAGS, &#34;cache&#34;: False, &#34;parallel&#34;: False})
     def f8(r):
