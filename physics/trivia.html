@@ -46,12 +46,16 @@ class Trivia:
         return np.power(volume / const.PI_4_3, const.ONE_THIRD)
 
     @staticmethod
+    def area(const, radius):
+        return const.PI * const.FOUR * np.power(radius, const.TWO)
+
+    @staticmethod
     def volume(const, radius):
         return const.PI_4_3 * np.power(radius, const.THREE)
 
     @staticmethod
     def sphere_surface(const, diameter):
-        return const.PI * diameter ** 2
+        return const.PI * diameter**2
 
     @staticmethod
     def explicit_euler(y, dt, dy_dt):
@@ -130,12 +134,16 @@ class Trivia:
         return np.power(volume / const.PI_4_3, const.ONE_THIRD)
 
     @staticmethod
+    def area(const, radius):
+        return const.PI * const.FOUR * np.power(radius, const.TWO)
+
+    @staticmethod
     def volume(const, radius):
         return const.PI_4_3 * np.power(radius, const.THREE)
 
     @staticmethod
     def sphere_surface(const, diameter):
-        return const.PI * diameter ** 2
+        return const.PI * diameter**2
 
     @staticmethod
     def explicit_euler(y, dt, dy_dt):
@@ -195,6 +203,20 @@ class Trivia:
 <pre><code class="python">@staticmethod
 def H2pH(H):
     return -np.log10(H * 1e-3)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.trivia.Trivia.area"><code class="name flex">
+<span>def <span class="ident">area</span></span>(<span>const, radius)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def area(const, radius):
+    return const.PI * const.FOUR * np.power(radius, const.TWO)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.arrhenius"><code class="name flex">
@@ -306,7 +328,7 @@ def radius(const, volume):
 </summary>
 <pre><code class="python">@staticmethod
 def sphere_surface(const, diameter):
-    return const.PI * diameter ** 2</code></pre>
+    return const.PI * diameter**2</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.tdep2enthalpy"><code class="name flex">
@@ -415,6 +437,7 @@ def within_tolerance(error_estimate, value, rtol):
 <h4><code><a title="PySDM.physics.trivia.Trivia" href="#PySDM.physics.trivia.Trivia">Trivia</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.physics.trivia.Trivia.H2pH" href="#PySDM.physics.trivia.Trivia.H2pH">H2pH</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.area" href="#PySDM.physics.trivia.Trivia.area">area</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.arrhenius" href="#PySDM.physics.trivia.Trivia.arrhenius">arrhenius</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.explicit_euler" href="#PySDM.physics.trivia.Trivia.explicit_euler">explicit_euler</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction" href="#PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction">mixing_ratio_2_mole_fraction</a></code></li>

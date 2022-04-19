@@ -35,7 +35,7 @@ from PySDM.physics import constants as const
 
 
 class Geometric(Gravitational):
-    def __init__(self, collection_efficiency=1, x=&#34;volume&#34;):
+    def __init__(self, collection_efficiency=1.0, x=&#34;volume&#34;):
         super().__init__()
         self.collection_efficiency = collection_efficiency
         self.x = x
@@ -61,7 +61,7 @@ class Geometric(Gravitational):
 <dl>
 <dt id="PySDM.dynamics.collisions.collision_kernels.geometric.Geometric"><code class="flex name class">
 <span>class <span class="ident">Geometric</span></span>
-<span>(</span><span>collection_efficiency=1, x='volume')</span>
+<span>(</span><span>collection_efficiency=1.0, x='volume')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -70,7 +70,7 @@ class Geometric(Gravitational):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Geometric(Gravitational):
-    def __init__(self, collection_efficiency=1, x=&#34;volume&#34;):
+    def __init__(self, collection_efficiency=1.0, x=&#34;volume&#34;):
         super().__init__()
         self.collection_efficiency = collection_efficiency
         self.x = x
