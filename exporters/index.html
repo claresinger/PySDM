@@ -31,7 +31,9 @@
 Exporters handling output to metadata-rich file formats incl. netCDF and VTK
 &#34;&#34;&#34;
 from .netcdf_exporter import NetCDFExporter
-from .vtk_exporter import VTKExporter</code></pre>
+from .netcdf_exporter_1d import NetCDFExporter_1d, readNetCDF_1d
+from .vtk_exporter import VTKExporter
+from .vtk_exporter_1d import VTKExporter_1d</code></pre>
 </details>
 </section>
 <section>
@@ -42,9 +44,17 @@ from .vtk_exporter import VTKExporter</code></pre>
 <div class="desc"><p>netCDF exporter implemented using
 <a href="https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#netcdf">SciPy.io.netcdf_file</a></p></div>
 </dd>
+<dt><code class="name"><a title="PySDM.exporters.netcdf_exporter_1d" href="netcdf_exporter_1d.html">PySDM.exporters.netcdf_exporter_1d</a></code></dt>
+<dd>
+<div class="desc"><p>netcdf exporter of scalar products for 1d simulations</p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.exporters.vtk_exporter" href="vtk_exporter.html">PySDM.exporters.vtk_exporter</a></code></dt>
 <dd>
 <div class="desc"><p>VTK exporter implemented using <a href="https://pypi.org/project/pyevtk/">pyevtk</a></p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.exporters.vtk_exporter_1d" href="vtk_exporter_1d.html">PySDM.exporters.vtk_exporter_1d</a></code></dt>
+<dd>
+<div class="desc"><p>vtk exporter of particle attributes for 1d simulations</p></div>
 </dd>
 </dl>
 </section>
@@ -69,7 +79,9 @@ from .vtk_exporter import VTKExporter</code></pre>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
 <li><code><a title="PySDM.exporters.netcdf_exporter" href="netcdf_exporter.html">PySDM.exporters.netcdf_exporter</a></code></li>
+<li><code><a title="PySDM.exporters.netcdf_exporter_1d" href="netcdf_exporter_1d.html">PySDM.exporters.netcdf_exporter_1d</a></code></li>
 <li><code><a title="PySDM.exporters.vtk_exporter" href="vtk_exporter.html">PySDM.exporters.vtk_exporter</a></code></li>
+<li><code><a title="PySDM.exporters.vtk_exporter_1d" href="vtk_exporter_1d.html">PySDM.exporters.vtk_exporter_1d</a></code></li>
 </ul>
 </li>
 </ul>
