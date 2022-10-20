@@ -35,7 +35,7 @@ from typing import Callable, Optional
 from ...impl_common.backend_methods import BackendMethods
 
 
-class ThrustRTCBackendMethods(BackendMethods):
+class ThrustRTCBackendMethods(BackendMethods):  # pylint: disable=too-few-public-methods
     def __init__(self):
         super().__init__()
         if not hasattr(self, &#34;_conv_function&#34;):
@@ -73,7 +73,7 @@ class ThrustRTCBackendMethods(BackendMethods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ThrustRTCBackendMethods(BackendMethods):
+<pre><code class="python">class ThrustRTCBackendMethods(BackendMethods):  # pylint: disable=too-few-public-methods
     def __init__(self):
         super().__init__()
         if not hasattr(self, &#34;_conv_function&#34;):
@@ -101,6 +101,7 @@ class ThrustRTCBackendMethods(BackendMethods):
 <li><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods" href="collisions_methods.html#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods">CollisionsMethods</a></li>
 <li><a title="PySDM.backends.impl_thrust_rtc.methods.condensation_methods.CondensationMethods" href="condensation_methods.html#PySDM.backends.impl_thrust_rtc.methods.condensation_methods.CondensationMethods">CondensationMethods</a></li>
 <li><a title="PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods" href="displacement_methods.html#PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
+<li><a title="PySDM.backends.impl_thrust_rtc.methods.freezing_methods.FreezingMethods" href="freezing_methods.html#PySDM.backends.impl_thrust_rtc.methods.freezing_methods.FreezingMethods">FreezingMethods</a></li>
 <li><a title="PySDM.backends.impl_thrust_rtc.methods.index_methods.IndexMethods" href="index_methods.html#PySDM.backends.impl_thrust_rtc.methods.index_methods.IndexMethods">IndexMethods</a></li>
 <li><a title="PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods" href="moments_methods.html#PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods">MomentsMethods</a></li>
 <li><a title="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods" href="pair_methods.html#PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods">PairMethods</a></li>

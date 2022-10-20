@@ -39,7 +39,7 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 class TerminalVelocityMethods(ThrustRTCBackendMethods):
     def __init__(self):
-        super().__init__()
+        ThrustRTCBackendMethods.__init__(self)
         self.__linear_collection_efficiency_body = trtc.For(
             (
                 &#34;A&#34;,
@@ -108,6 +108,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
     def linear_collection_efficiency(
         self, *, params, output, radii, is_first_in_pair, unit
     ):
+        # pylint: disable=too-many-locals
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         dA = self._get_floating_point(A)
         dB = self._get_floating_point(B)
@@ -176,7 +177,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
 </summary>
 <pre><code class="python">class TerminalVelocityMethods(ThrustRTCBackendMethods):
     def __init__(self):
-        super().__init__()
+        ThrustRTCBackendMethods.__init__(self)
         self.__linear_collection_efficiency_body = trtc.For(
             (
                 &#34;A&#34;,
@@ -245,6 +246,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
     def linear_collection_efficiency(
         self, *, params, output, radii, is_first_in_pair, unit
     ):
+        # pylint: disable=too-many-locals
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         dA = self._get_floating_point(A)
         dB = self._get_floating_point(B)
@@ -333,6 +335,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
 <pre><code class="python">def linear_collection_efficiency(
     self, *, params, output, radii, is_first_in_pair, unit
 ):
+    # pylint: disable=too-many-locals
     A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
     dA = self._get_floating_point(A)
     dB = self._get_floating_point(B)

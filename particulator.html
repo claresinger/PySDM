@@ -40,7 +40,7 @@ from PySDM.backends.impl_common.pairwise_storage import make_PairwiseStorage
 from PySDM.impl.particle_attributes import ParticleAttributes
 
 
-class Particulator:  # pylint: disable=too-many-public-methods
+class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance-attributes
     def __init__(self, n_sd, backend: BackendMethods):
         assert isinstance(backend, BackendMethods)
         self.__n_sd = n_sd
@@ -168,14 +168,15 @@ class Particulator:  # pylint: disable=too-many-public-methods
         Ec,
         Eb,
         n_fragment,
+        fragment_size,
         coalescence_rate,
         breakup_rate,
         breakup_rate_deficit,
         is_first_in_pair,
-        min_volume,
         warn_overflows,
         handle_all_breakups=False,
     ):
+        # pylint: disable=too-many-locals
         idx = self.attributes._ParticleAttributes__idx
         healthy = self.attributes._ParticleAttributes__healthy_memory
         cell_id = self.attributes[&#34;cell id&#34;]
@@ -191,13 +192,13 @@ class Particulator:  # pylint: disable=too-many-public-methods
                 Ec=Ec,
                 Eb=Eb,
                 n_fragment=n_fragment,
+                fragment_size=fragment_size,
                 healthy=healthy,
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
                 breakup_rate=breakup_rate,
                 breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
-                min_volume=min_volume,
                 warn_overflows=warn_overflows,
                 volume=self.attributes[&#34;volume&#34;],
                 handle_all_breakups=handle_all_breakups,
@@ -463,7 +464,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Particulator:  # pylint: disable=too-many-public-methods
+<pre><code class="python">class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance-attributes
     def __init__(self, n_sd, backend: BackendMethods):
         assert isinstance(backend, BackendMethods)
         self.__n_sd = n_sd
@@ -591,14 +592,15 @@ class Particulator:  # pylint: disable=too-many-public-methods
         Ec,
         Eb,
         n_fragment,
+        fragment_size,
         coalescence_rate,
         breakup_rate,
         breakup_rate_deficit,
         is_first_in_pair,
-        min_volume,
         warn_overflows,
         handle_all_breakups=False,
     ):
+        # pylint: disable=too-many-locals
         idx = self.attributes._ParticleAttributes__idx
         healthy = self.attributes._ParticleAttributes__healthy_memory
         cell_id = self.attributes[&#34;cell id&#34;]
@@ -614,13 +616,13 @@ class Particulator:  # pylint: disable=too-many-public-methods
                 Ec=Ec,
                 Eb=Eb,
                 n_fragment=n_fragment,
+                fragment_size=fragment_size,
                 healthy=healthy,
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
                 breakup_rate=breakup_rate,
                 breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
-                min_volume=min_volume,
                 warn_overflows=warn_overflows,
                 volume=self.attributes[&#34;volume&#34;],
                 handle_all_breakups=handle_all_breakups,
@@ -1007,7 +1009,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.collision_coalescence_breakup"><code class="name flex">
-<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, enable_breakup, gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, min_volume, warn_overflows, handle_all_breakups=False)</span>
+<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, enable_breakup, gamma, rand, Ec, Eb, n_fragment, fragment_size, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows, handle_all_breakups=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1024,14 +1026,15 @@ def n_sd(self) -&gt; int:
     Ec,
     Eb,
     n_fragment,
+    fragment_size,
     coalescence_rate,
     breakup_rate,
     breakup_rate_deficit,
     is_first_in_pair,
-    min_volume,
     warn_overflows,
     handle_all_breakups=False,
 ):
+    # pylint: disable=too-many-locals
     idx = self.attributes._ParticleAttributes__idx
     healthy = self.attributes._ParticleAttributes__healthy_memory
     cell_id = self.attributes[&#34;cell id&#34;]
@@ -1047,13 +1050,13 @@ def n_sd(self) -&gt; int:
             Ec=Ec,
             Eb=Eb,
             n_fragment=n_fragment,
+            fragment_size=fragment_size,
             healthy=healthy,
             cell_id=cell_id,
             coalescence_rate=coalescence_rate,
             breakup_rate=breakup_rate,
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
-            min_volume=min_volume,
             warn_overflows=warn_overflows,
             volume=self.attributes[&#34;volume&#34;],
             handle_all_breakups=handle_all_breakups,

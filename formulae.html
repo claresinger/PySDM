@@ -33,6 +33,7 @@ Logic for enabling common CPU/GPU physics formulae code
 import inspect
 import numbers
 import re
+import warnings
 from collections import namedtuple
 from functools import lru_cache, partial
 from types import SimpleNamespace
@@ -41,13 +42,14 @@ from typing import Optional
 import numba
 import numpy as np
 import pint
+from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
 
 
-class Formulae:
-    def __init__(
+class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
+    def __init__(  # pylint: disable=too-many-locals
         self,
         *,
         constants: Optional[dict] = None,
@@ -69,11 +71,10 @@ class Formulae:
         heterogeneous_ice_nucleation_rate: str = &#34;Null&#34;,
     ):
         constants_defaults = {
-            k: getattr(physics.constants_defaults, k)
-            for k in dir(physics.constants_defaults)
-            if isinstance(
-                getattr(physics.constants_defaults, k), (numbers.Number, pint.Quantity)
-            )
+            k: getattr(defaults, k)
+            for defaults in (physics.constants, physics.constants_defaults)
+            for k in dir(defaults)
+            if isinstance(getattr(defaults, k), (numbers.Number, pint.Quantity))
         }
         constants = namedtuple(&#34;Constants&#34;, tuple(constants_defaults.keys()))(
             **{**constants_defaults, **(constants or {})}
@@ -192,9 +193,12 @@ class Formulae:
 
 
 def _formula(func, constants, dimensional_analysis, **kw):
+    parameters_keys = tuple(inspect.signature(func).parameters.keys())
+    special_params = (&#34;_&#34;, &#34;const&#34;)
+
     if dimensional_analysis:
-        first_param = tuple(inspect.signature(func).parameters.keys())[0]
-        if first_param in (&#34;_&#34;, &#34;const&#34;):
+        first_param = parameters_keys[0]
+        if first_param in special_params:
             return partial(func, constants)
         return func
 
@@ -202,7 +206,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
     for line in inspect.getsourcelines(func)[0]:
         source += f&#34;{line}\n&#34;
     loc = {}
-    for arg_name in (&#34;_&#34;, &#34;const&#34;):
+    for arg_name in special_params:
         source = source.replace(
             f&#34;def {func.__name__}({arg_name},&#34;, f&#34;def {func.__name__}(&#34;
         )
@@ -211,6 +215,27 @@ def _formula(func, constants, dimensional_analysis, **kw):
     exec(  # pylint:disable=exec-used
         source, {&#34;const&#34;: constants, &#34;np&#34;: np, **extras}, loc
     )
+
+    n_params = len(parameters_keys) - (1 if parameters_keys[0] in special_params else 0)
+    function = getattr(loc[&#34;_&#34;], func.__name__)
+    if hasattr(func, &#34;__vectorize&#34;):
+        vectorizer = (
+            np.vectorize
+            if numba.config.DISABLE_JIT  # pylint: disable=no-member
+            else numba.vectorize(
+                &#34;float64(&#34; + &#34;,&#34;.join([&#34;float64&#34;] * n_params) + &#34;)&#34;,
+                target=&#34;cpu&#34;,
+                nopython=True,
+                **{
+                    k: v
+                    for k, v in conf.JIT_FLAGS.items()
+                    if k not in (&#34;parallel&#34;, &#34;error_model&#34;)
+                },
+            )
+        )
+        with warnings.catch_warnings():
+            warnings.simplefilter(&#34;ignore&#34;, category=NumbaExperimentalFeatureWarning)
+            return vectorizer(function)
     return numba.njit(
         getattr(loc[&#34;_&#34;], func.__name__),
         **{
@@ -260,6 +285,7 @@ def _c_inline(fun, return_type=None, constants=None, **args):
         source += stripped
     source = source.replace(&#34;np.power(&#34;, &#34;np.pow(&#34;)
     source = source.replace(&#34;np.&#34;, &#34;&#34;)
+    source = source.replace(&#34;, )&#34;, &#34;)&#34;)
     source = re.sub(&#34;^return &#34;, &#34;&#34;, source)
     for arg in inspect.signature(fun).parameters:
         if arg not in (&#34;_&#34;, &#34;const&#34;):
@@ -318,8 +344,8 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Formulae:
-    def __init__(
+<pre><code class="python">class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
+    def __init__(  # pylint: disable=too-many-locals
         self,
         *,
         constants: Optional[dict] = None,
@@ -341,11 +367,10 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
         heterogeneous_ice_nucleation_rate: str = &#34;Null&#34;,
     ):
         constants_defaults = {
-            k: getattr(physics.constants_defaults, k)
-            for k in dir(physics.constants_defaults)
-            if isinstance(
-                getattr(physics.constants_defaults, k), (numbers.Number, pint.Quantity)
-            )
+            k: getattr(defaults, k)
+            for defaults in (physics.constants, physics.constants_defaults)
+            for k in dir(defaults)
+            if isinstance(getattr(defaults, k), (numbers.Number, pint.Quantity))
         }
         constants = namedtuple(&#34;Constants&#34;, tuple(constants_defaults.keys()))(
             **{**constants_defaults, **(constants or {})}

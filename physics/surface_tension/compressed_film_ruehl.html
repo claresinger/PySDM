@@ -54,7 +54,7 @@ within_tolerance = numba.njit(
 )
 
 
-class CompressedFilmRuehl:
+class CompressedFilmRuehl:  # pylint: disable=too-few-public-methods
     &#34;&#34;&#34;
     Compressed film model of surface-partitioning of organics from Ruehl et al. (2016).
     Described in supplementary materials equations (13) and (15).
@@ -75,7 +75,7 @@ class CompressedFilmRuehl:
         assert np.isfinite(const.RUEHL_sgm_min)
 
     @staticmethod
-    def sigma(const, T, v_wet, v_dry, f_org):
+    def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=too-many-locals
         # wet radius (m)
         r_wet = ((3 * v_wet) / (4 * const.PI)) ** (1 / 3)
 
@@ -100,7 +100,7 @@ class CompressedFilmRuehl:
             args = (Cb_iso, const.RUEHL_C0, const.RUEHL_A0, A_iso, c)
             rtol = 1e-6
             max_iters = 1e2
-            bracket = (rtol, 1)
+            bracket = bracket = (1e-16, 1)
             f_surf, iters = toms748_solve(
                 minfun,
                 args,
@@ -125,7 +125,8 @@ CompressedFilmRuehl.sigma.__extras = {
     &#34;toms748_solve&#34;: toms748_solve,
     &#34;minfun&#34;: minfun,
     &#34;within_tolerance&#34;: within_tolerance,
-}</code></pre>
+}
+CompressedFilmRuehl.sigma.__vectorize = True</code></pre>
 </details>
 </section>
 <section>
@@ -173,7 +174,7 @@ is linear, with slope <code>m_sigma</code>.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CompressedFilmRuehl:
+<pre><code class="python">class CompressedFilmRuehl:  # pylint: disable=too-few-public-methods
     &#34;&#34;&#34;
     Compressed film model of surface-partitioning of organics from Ruehl et al. (2016).
     Described in supplementary materials equations (13) and (15).
@@ -194,7 +195,7 @@ is linear, with slope <code>m_sigma</code>.</p></div>
         assert np.isfinite(const.RUEHL_sgm_min)
 
     @staticmethod
-    def sigma(const, T, v_wet, v_dry, f_org):
+    def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=too-many-locals
         # wet radius (m)
         r_wet = ((3 * v_wet) / (4 * const.PI)) ** (1 / 3)
 
@@ -219,7 +220,7 @@ is linear, with slope <code>m_sigma</code>.</p></div>
             args = (Cb_iso, const.RUEHL_C0, const.RUEHL_A0, A_iso, c)
             rtol = 1e-6
             max_iters = 1e2
-            bracket = (rtol, 1)
+            bracket = bracket = (1e-16, 1)
             f_surf, iters = toms748_solve(
                 minfun,
                 args,
@@ -251,7 +252,7 @@ is linear, with slope <code>m_sigma</code>.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def sigma(const, T, v_wet, v_dry, f_org):
+def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=too-many-locals
     # wet radius (m)
     r_wet = ((3 * v_wet) / (4 * const.PI)) ** (1 / 3)
 
@@ -276,7 +277,7 @@ def sigma(const, T, v_wet, v_dry, f_org):
         args = (Cb_iso, const.RUEHL_C0, const.RUEHL_A0, A_iso, c)
         rtol = 1e-6
         max_iters = 1e2
-        bracket = (rtol, 1)
+        bracket = bracket = (1e-16, 1)
         f_surf, iters = toms748_solve(
             minfun,
             args,

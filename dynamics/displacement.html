@@ -46,7 +46,7 @@ import numpy as np
 DEFAULTS = namedtuple(&#34;_&#34;, (&#34;rtol&#34;, &#34;adaptive&#34;))(rtol=1e-2, adaptive=True)
 
 
-class Displacement:
+class Displacement:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         enable_sedimentation=False,
@@ -81,6 +81,12 @@ class Displacement:
             courant_field = (
                 np.full((self.grid[0] + 1, self.grid[1]), np.nan),
                 np.full((self.grid[0], self.grid[1] + 1), np.nan),
+            )
+        elif self.dimension == 3:
+            courant_field = (
+                np.full((self.grid[0] + 1, self.grid[1], self.grid[2]), np.nan),
+                np.full((self.grid[0], self.grid[1] + 1, self.grid[2]), np.nan),
+                np.full((self.grid[0], self.grid[1], self.grid[2] + 1), np.nan),
             )
         else:
             raise NotImplementedError()
@@ -193,7 +199,7 @@ class Displacement:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Displacement:
+<pre><code class="python">class Displacement:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         enable_sedimentation=False,
@@ -228,6 +234,12 @@ class Displacement:
             courant_field = (
                 np.full((self.grid[0] + 1, self.grid[1]), np.nan),
                 np.full((self.grid[0], self.grid[1] + 1), np.nan),
+            )
+        elif self.dimension == 3:
+            courant_field = (
+                np.full((self.grid[0] + 1, self.grid[1], self.grid[2]), np.nan),
+                np.full((self.grid[0], self.grid[1] + 1, self.grid[2]), np.nan),
+                np.full((self.grid[0], self.grid[1], self.grid[2] + 1), np.nan),
             )
         else:
             raise NotImplementedError()
@@ -402,6 +414,12 @@ def update_position(position_in_cell, displacement):
         courant_field = (
             np.full((self.grid[0] + 1, self.grid[1]), np.nan),
             np.full((self.grid[0], self.grid[1] + 1), np.nan),
+        )
+    elif self.dimension == 3:
+        courant_field = (
+            np.full((self.grid[0] + 1, self.grid[1], self.grid[2]), np.nan),
+            np.full((self.grid[0], self.grid[1] + 1, self.grid[2]), np.nan),
+            np.full((self.grid[0], self.grid[1], self.grid[2] + 1), np.nan),
         )
     else:
         raise NotImplementedError()
