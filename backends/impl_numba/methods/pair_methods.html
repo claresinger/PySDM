@@ -66,7 +66,7 @@ class PairMethods(BackendMethods):
                 cell_id[idx[i]] == cell_id[idx[i + 1]]
                 and (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
             )
-        is_first_in_pair[-1] = False
+        is_first_in_pair[length - 1] = False
 
     @staticmethod
     def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
@@ -101,7 +101,7 @@ class PairMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     def min_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+        for i in numba.prange(length):  # pylint: disable=not-an-iterable
             if is_first_in_pair[i]:
                 data_out[i // 2] = min(data_in[idx[i]], data_in[idx[i + 1]])
 
@@ -154,7 +154,7 @@ class PairMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+        for i in numba.prange(length):  # pylint: disable=not-an-iterable
             if is_first_in_pair[i]:
                 data_out[i // 2] = data_in[idx[i]] + data_in[idx[i + 1]]
 
@@ -234,7 +234,7 @@ class PairMethods(BackendMethods):
                 cell_id[idx[i]] == cell_id[idx[i + 1]]
                 and (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
             )
-        is_first_in_pair[-1] = False
+        is_first_in_pair[length - 1] = False
 
     @staticmethod
     def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
@@ -269,7 +269,7 @@ class PairMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     def min_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+        for i in numba.prange(length):  # pylint: disable=not-an-iterable
             if is_first_in_pair[i]:
                 data_out[i // 2] = min(data_in[idx[i]], data_in[idx[i + 1]])
 
@@ -322,7 +322,7 @@ class PairMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+        for i in numba.prange(length):  # pylint: disable=not-an-iterable
             if is_first_in_pair[i]:
                 data_out[i // 2] = data_in[idx[i]] + data_in[idx[i + 1]]
 
@@ -442,7 +442,7 @@ def find_pairs_body(
             cell_id[idx[i]] == cell_id[idx[i + 1]]
             and (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
         )
-    is_first_in_pair[-1] = False</code></pre>
+    is_first_in_pair[length - 1] = False</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.max_pair"><code class="name flex">
@@ -516,7 +516,7 @@ def min_pair(data_out, data_in, is_first_in_pair, idx):
 @numba.njit(**conf.JIT_FLAGS)
 def min_pair_body(data_out, data_in, is_first_in_pair, idx, length):
     data_out[:] = 0
-    for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+    for i in numba.prange(length):  # pylint: disable=not-an-iterable
         if is_first_in_pair[i]:
             data_out[i // 2] = min(data_in[idx[i]], data_in[idx[i + 1]])</code></pre>
 </details>
@@ -667,7 +667,7 @@ def sum_pair(data_out, data_in, is_first_in_pair, idx):
 @numba.njit(**conf.JIT_FLAGS)
 def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
     data_out[:] = 0
-    for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+    for i in numba.prange(length):  # pylint: disable=not-an-iterable
         if is_first_in_pair[i]:
             data_out[i // 2] = data_in[idx[i]] + data_in[idx[i + 1]]</code></pre>
 </details>
