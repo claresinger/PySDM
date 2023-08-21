@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.dynamics.collisions.collision_kernels.impl.gravitational API documentation</title>
-<meta name="description" content="common parent class for gravitational collision kernels" />
+<title>PySDM_examples.Arabas_et_al_2023.run_simulation API documentation</title>
+<meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,29 +19,47 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.dynamics.collisions.collision_kernels.impl.gravitational</code></h1>
+<h1 class="title">Module <code>PySDM_examples.Arabas_et_al_2023.run_simulation</code></h1>
 </header>
 <section id="section-intro">
-<p>common parent class for gravitational collision kernels</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34; common parent class for gravitational collision kernels &#34;&#34;&#34;
+<pre><code class="python">import numpy as np
 
 
-class Gravitational:  # pylint: disable=too-few-public-methods
-    def __init__(self):
-        self.particulator = None
-        self.pair_tmp = None
+def update_thermo(particulator, T):
+    env = particulator.environment
+    svp = particulator.formulae.saturation_vapour_pressure
+    const = particulator.formulae.constants
 
-    def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute(&#34;radius&#34;)
-        builder.request_attribute(&#34;relative fall velocity&#34;)
-        self.pair_tmp = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )</code></pre>
+    env[&#34;T&#34;] = T
+    env[&#34;a_w_ice&#34;] = svp.ice_Celsius(T - const.T0) / svp.pvs_Celsius(T - const.T0)
+
+
+def run_simulation(particulator, temperature_profile, n_steps):
+    output = {
+        &#34;products&#34;: {k: [] for k in particulator.products.keys()},
+        &#34;attributes&#34;: [],
+    }
+    for step in range(n_steps + 1):
+        if step != 0:
+            update_thermo(
+                particulator, T=temperature_profile((step - 0.5) * particulator.dt)
+            )
+            particulator.run(step - particulator.n_steps)
+            update_thermo(particulator, T=temperature_profile(step * particulator.dt))
+            output[&#34;frozen&#34;].append(particulator.attributes[&#34;volume&#34;].to_ndarray() &lt; 0)
+        else:
+            output[&#34;spectrum&#34;] = {}
+            output[&#34;frozen&#34;] = [np.full(particulator.n_sd, False)]
+            for k in (&#34;n&#34;, &#34;freezing temperature&#34;, &#34;immersed surface area&#34;):
+                if k in particulator.attributes:
+                    output[&#34;spectrum&#34;][k] = particulator.attributes[k].to_ndarray()
+        for k, v in particulator.products.items():
+            output[&#34;products&#34;][k].append(v.get() + 0)
+    return output</code></pre>
 </details>
 </section>
 <section>
@@ -49,12 +67,10 @@ class Gravitational:  # pylint: disable=too-few-public-methods
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational"><code class="flex name class">
-<span>class <span class="ident">Gravitational</span></span>
+<dt id="PySDM_examples.Arabas_et_al_2023.run_simulation.run_simulation"><code class="name flex">
+<span>def <span class="ident">run_simulation</span></span>(<span>particulator, temperature_profile, n_steps)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -62,28 +78,32 @@ class Gravitational:  # pylint: disable=too-few-public-methods
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Gravitational:  # pylint: disable=too-few-public-methods
-    def __init__(self):
-        self.particulator = None
-        self.pair_tmp = None
-
-    def register(self, builder):
-        self.particulator = builder.particulator
-        builder.request_attribute(&#34;radius&#34;)
-        builder.request_attribute(&#34;relative fall velocity&#34;)
-        self.pair_tmp = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )</code></pre>
+<pre><code class="python">def run_simulation(particulator, temperature_profile, n_steps):
+    output = {
+        &#34;products&#34;: {k: [] for k in particulator.products.keys()},
+        &#34;attributes&#34;: [],
+    }
+    for step in range(n_steps + 1):
+        if step != 0:
+            update_thermo(
+                particulator, T=temperature_profile((step - 0.5) * particulator.dt)
+            )
+            particulator.run(step - particulator.n_steps)
+            update_thermo(particulator, T=temperature_profile(step * particulator.dt))
+            output[&#34;frozen&#34;].append(particulator.attributes[&#34;volume&#34;].to_ndarray() &lt; 0)
+        else:
+            output[&#34;spectrum&#34;] = {}
+            output[&#34;frozen&#34;] = [np.full(particulator.n_sd, False)]
+            for k in (&#34;n&#34;, &#34;freezing temperature&#34;, &#34;immersed surface area&#34;):
+                if k in particulator.attributes:
+                    output[&#34;spectrum&#34;][k] = particulator.attributes[k].to_ndarray()
+        for k, v in particulator.products.items():
+            output[&#34;products&#34;][k].append(v.get() + 0)
+    return output</code></pre>
 </details>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="PySDM.dynamics.collisions.collision_kernels.geometric.Geometric" href="../geometric.html#PySDM.dynamics.collisions.collision_kernels.geometric.Geometric">Geometric</a></li>
-<li><a title="PySDM.dynamics.collisions.collision_kernels.impl.parameterized.Parameterized" href="parameterized.html#PySDM.dynamics.collisions.collision_kernels.impl.parameterized.Parameterized">Parameterized</a></li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational.register"><code class="name flex">
-<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
+</dd>
+<dt id="PySDM_examples.Arabas_et_al_2023.run_simulation.update_thermo"><code class="name flex">
+<span>def <span class="ident">update_thermo</span></span>(<span>particulator, T)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -91,18 +111,18 @@ class Gravitational:  # pylint: disable=too-few-public-methods
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def register(self, builder):
-    self.particulator = builder.particulator
-    builder.request_attribute(&#34;radius&#34;)
-    builder.request_attribute(&#34;relative fall velocity&#34;)
-    self.pair_tmp = self.particulator.PairwiseStorage.empty(
-        self.particulator.n_sd // 2, dtype=float
-    )</code></pre>
+<pre><code class="python">def update_thermo(particulator, T):
+    env = particulator.environment
+    svp = particulator.formulae.saturation_vapour_pressure
+    const = particulator.formulae.constants
+
+    env[&#34;T&#34;] = T
+    env[&#34;a_w_ice&#34;] = svp.ice_Celsius(T - const.T0) / svp.pvs_Celsius(T - const.T0)</code></pre>
 </details>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -113,17 +133,13 @@ class Gravitational:  # pylint: disable=too-few-public-methods
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.impl" href="index.html">PySDM.dynamics.collisions.collision_kernels.impl</a></code></li>
+<li><code><a title="PySDM_examples.Arabas_et_al_2023" href="index.html">PySDM_examples.Arabas_et_al_2023</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational" href="#PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational">Gravitational</a></code></h4>
+<li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational.register" href="#PySDM.dynamics.collisions.collision_kernels.impl.gravitational.Gravitational.register">register</a></code></li>
-</ul>
-</li>
+<li><code><a title="PySDM_examples.Arabas_et_al_2023.run_simulation.run_simulation" href="#PySDM_examples.Arabas_et_al_2023.run_simulation.run_simulation">run_simulation</a></code></li>
+<li><code><a title="PySDM_examples.Arabas_et_al_2023.run_simulation.update_thermo" href="#PySDM_examples.Arabas_et_al_2023.run_simulation.update_thermo">update_thermo</a></code></li>
 </ul>
 </li>
 </ul>
