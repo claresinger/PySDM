@@ -123,7 +123,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             # input
             rhod=self.environment.get_predicted(&#34;rhod&#34;),
             thd=self.environment.get_predicted(&#34;thd&#34;),
-            qv=self.environment.get_predicted(&#34;qv&#34;),
+            water_vapour_mixing_ratio=self.environment.get_predicted(
+                &#34;water_vapour_mixing_ratio&#34;
+            ),
             # output
             T=self.environment.get_predicted(&#34;T&#34;),
             p=self.environment.get_predicted(&#34;p&#34;),
@@ -134,26 +136,30 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         &#34;&#34;&#34;Updates droplet volumes by simulating condensation driven by prior changes
           in environment thermodynamic state, updates the environment state.
         In the case of parcel environment, condensation is driven solely by changes in
-          the dry-air density (theta and qv should not be changed by other dynamics).
+          the dry-air density (theta and water_vapour_mixing_ratio should not be changed
+          by other dynamics).
         In the case of prescribed-flow/kinematic environments, the dry-air density is
           constant in time throughout the simulation.
-        This function should only change environment&#39;s `thd` and `qv` (and not `rhod`).
+        This function should only change environment&#39;s predicted `thd` and
+          `water_vapour_mixing_ratio` (and not `rhod`).
         &#34;&#34;&#34;
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
             cell_start_arg=self.attributes.cell_start,
             v=self.attributes[&#34;volume&#34;],
-            n=self.attributes[&#34;n&#34;],
+            multiplicity=self.attributes[&#34;multiplicity&#34;],
             vdry=self.attributes[&#34;dry volume&#34;],
             idx=self.attributes._ParticleAttributes__idx,
             rhod=self.environment[&#34;rhod&#34;],
             thd=self.environment[&#34;thd&#34;],
-            qv=self.environment[&#34;qv&#34;],
+            water_vapour_mixing_ratio=self.environment[&#34;water_vapour_mixing_ratio&#34;],
             dv=self.environment.dv,
             prhod=self.environment.get_predicted(&#34;rhod&#34;),
             pthd=self.environment.get_predicted(&#34;thd&#34;),
-            pqv=self.environment.get_predicted(&#34;qv&#34;),
+            predicted_water_vapour_mixing_ratio=self.environment.get_predicted(
+                &#34;water_vapour_mixing_ratio&#34;
+            ),
             kappa=self.attributes[&#34;kappa&#34;],
             f_org=self.attributes[&#34;dry volume organic fraction&#34;],
             rtol_x=rtol_x,
@@ -188,7 +194,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         idx = self.attributes._ParticleAttributes__idx
         healthy = self.attributes._ParticleAttributes__healthy_memory
         cell_id = self.attributes[&#34;cell id&#34;]
-        multiplicity = self.attributes[&#34;n&#34;]
+        multiplicity = self.attributes[&#34;multiplicity&#34;]
         attributes = self.attributes.get_extensive_attribute_storage()
         if enable_breakup:
             self.backend.collision_coalescence_breakup(
@@ -225,7 +231,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             self.attributes._ParticleAttributes__healthy_memory
         )
         self.attributes.sanitize()
-        self.attributes.mark_updated(&#34;n&#34;)
+        self.attributes.mark_updated(&#34;multiplicity&#34;)
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
 
@@ -290,7 +296,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             timestep=timestep,
             dv=self.mesh.dv,
             droplet_volume=self.attributes[&#34;volume&#34;],
-            multiplicity=self.attributes[&#34;n&#34;],
+            multiplicity=self.attributes[&#34;multiplicity&#34;],
             system_type=system_type,
             dissociation_factors=dissociation_factors,
         )
@@ -370,7 +376,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.backend.moments(
             moment_0=moment_0,
             moments=moments,
-            multiplicity=self.attributes[&#34;n&#34;],
+            multiplicity=self.attributes[&#34;multiplicity&#34;],
             attr_data=attr_data,
             cell_id=self.attributes[&#34;cell id&#34;],
             idx=self.attributes._ParticleAttributes__idx,
@@ -400,7 +406,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.backend.spectrum_moments(
             moment_0=moment_0,
             moments=moments,
-            multiplicity=self.attributes[&#34;n&#34;],
+            multiplicity=self.attributes[&#34;multiplicity&#34;],
             attr_data=attr_data,
             cell_id=self.attributes[&#34;cell id&#34;],
             idx=self.attributes._ParticleAttributes__idx,
@@ -422,7 +428,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             cell_origin=self.attributes[&#34;cell origin&#34;],
             position_in_cell=self.attributes[&#34;position in cell&#34;],
             volume=self.attributes[&#34;volume&#34;],
-            multiplicity=self.attributes[&#34;n&#34;],
+            multiplicity=self.attributes[&#34;multiplicity&#34;],
             idx=self.attributes._ParticleAttributes__idx,
             length=self.attributes.super_droplet_count,
             healthy=self.attributes._ParticleAttributes__healthy_memory,
@@ -565,7 +571,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             # input
             rhod=self.environment.get_predicted(&#34;rhod&#34;),
             thd=self.environment.get_predicted(&#34;thd&#34;),
-            qv=self.environment.get_predicted(&#34;qv&#34;),
+            water_vapour_mixing_ratio=self.environment.get_predicted(
+                &#34;water_vapour_mixing_ratio&#34;
+            ),
             # output
             T=self.environment.get_predicted(&#34;T&#34;),
             p=self.environment.get_predicted(&#34;p&#34;),
@@ -576,26 +584,30 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         &#34;&#34;&#34;Updates droplet volumes by simulating condensation driven by prior changes
           in environment thermodynamic state, updates the environment state.
         In the case of parcel environment, condensation is driven solely by changes in
-          the dry-air density (theta and qv should not be changed by other dynamics).
+          the dry-air density (theta and water_vapour_mixing_ratio should not be changed
+          by other dynamics).
         In the case of prescribed-flow/kinematic environments, the dry-air density is
           constant in time throughout the simulation.
-        This function should only change environment&#39;s `thd` and `qv` (and not `rhod`).
+        This function should only change environment&#39;s predicted `thd` and
+          `water_vapour_mixing_ratio` (and not `rhod`).
         &#34;&#34;&#34;
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
             cell_start_arg=self.attributes.cell_start,
             v=self.attributes[&#34;volume&#34;],
-            n=self.attributes[&#34;n&#34;],
+            multiplicity=self.attributes[&#34;multiplicity&#34;],
             vdry=self.attributes[&#34;dry volume&#34;],
             idx=self.attributes._ParticleAttributes__idx,
             rhod=self.environment[&#34;rhod&#34;],
             thd=self.environment[&#34;thd&#34;],
-            qv=self.environment[&#34;qv&#34;],
+            water_vapour_mixing_ratio=self.environment[&#34;water_vapour_mixing_ratio&#34;],
             dv=self.environment.dv,
             prhod=self.environment.get_predicted(&#34;rhod&#34;),
             pthd=self.environment.get_predicted(&#34;thd&#34;),
-            pqv=self.environment.get_predicted(&#34;qv&#34;),
+            predicted_water_vapour_mixing_ratio=self.environment.get_predicted(
+                &#34;water_vapour_mixing_ratio&#34;
+            ),
             kappa=self.attributes[&#34;kappa&#34;],
             f_org=self.attributes[&#34;dry volume organic fraction&#34;],
             rtol_x=rtol_x,
@@ -630,7 +642,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         idx = self.attributes._ParticleAttributes__idx
         healthy = self.attributes._ParticleAttributes__healthy_memory
         cell_id = self.attributes[&#34;cell id&#34;]
-        multiplicity = self.attributes[&#34;n&#34;]
+        multiplicity = self.attributes[&#34;multiplicity&#34;]
         attributes = self.attributes.get_extensive_attribute_storage()
         if enable_breakup:
             self.backend.collision_coalescence_breakup(
@@ -667,7 +679,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             self.attributes._ParticleAttributes__healthy_memory
         )
         self.attributes.sanitize()
-        self.attributes.mark_updated(&#34;n&#34;)
+        self.attributes.mark_updated(&#34;multiplicity&#34;)
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
 
@@ -732,7 +744,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             timestep=timestep,
             dv=self.mesh.dv,
             droplet_volume=self.attributes[&#34;volume&#34;],
-            multiplicity=self.attributes[&#34;n&#34;],
+            multiplicity=self.attributes[&#34;multiplicity&#34;],
             system_type=system_type,
             dissociation_factors=dissociation_factors,
         )
@@ -812,7 +824,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.backend.moments(
             moment_0=moment_0,
             moments=moments,
-            multiplicity=self.attributes[&#34;n&#34;],
+            multiplicity=self.attributes[&#34;multiplicity&#34;],
             attr_data=attr_data,
             cell_id=self.attributes[&#34;cell id&#34;],
             idx=self.attributes._ParticleAttributes__idx,
@@ -842,7 +854,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.backend.spectrum_moments(
             moment_0=moment_0,
             moments=moments,
-            multiplicity=self.attributes[&#34;n&#34;],
+            multiplicity=self.attributes[&#34;multiplicity&#34;],
             attr_data=attr_data,
             cell_id=self.attributes[&#34;cell id&#34;],
             idx=self.attributes._ParticleAttributes__idx,
@@ -864,7 +876,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             cell_origin=self.attributes[&#34;cell origin&#34;],
             position_in_cell=self.attributes[&#34;position in cell&#34;],
             volume=self.attributes[&#34;volume&#34;],
-            multiplicity=self.attributes[&#34;n&#34;],
+            multiplicity=self.attributes[&#34;multiplicity&#34;],
             idx=self.attributes._ParticleAttributes__idx,
             length=self.attributes.super_droplet_count,
             healthy=self.attributes._ParticleAttributes__healthy_memory,
@@ -1073,7 +1085,7 @@ def n_sd(self) -&gt; int:
     idx = self.attributes._ParticleAttributes__idx
     healthy = self.attributes._ParticleAttributes__healthy_memory
     cell_id = self.attributes[&#34;cell id&#34;]
-    multiplicity = self.attributes[&#34;n&#34;]
+    multiplicity = self.attributes[&#34;multiplicity&#34;]
     attributes = self.attributes.get_extensive_attribute_storage()
     if enable_breakup:
         self.backend.collision_coalescence_breakup(
@@ -1110,7 +1122,7 @@ def n_sd(self) -&gt; int:
         self.attributes._ParticleAttributes__healthy_memory
     )
     self.attributes.sanitize()
-    self.attributes.mark_updated(&#34;n&#34;)
+    self.attributes.mark_updated(&#34;multiplicity&#34;)
     for key in self.attributes.get_extensive_attribute_keys():
         self.attributes.mark_updated(key)</code></pre>
 </details>
@@ -1122,10 +1134,12 @@ def n_sd(self) -&gt; int:
 <div class="desc"><p>Updates droplet volumes by simulating condensation driven by prior changes
 in environment thermodynamic state, updates the environment state.
 In the case of parcel environment, condensation is driven solely by changes in
-the dry-air density (theta and qv should not be changed by other dynamics).
+the dry-air density (theta and water_vapour_mixing_ratio should not be changed
+by other dynamics).
 In the case of prescribed-flow/kinematic environments, the dry-air density is
 constant in time throughout the simulation.
-This function should only change environment's <code>thd</code> and <code>qv</code> (and not <code>rhod</code>).</p></div>
+This function should only change environment's predicted <code>thd</code> and
+<code>water_vapour_mixing_ratio</code> (and not <code>rhod</code>).</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1134,26 +1148,30 @@ This function should only change environment's <code>thd</code> and <code>qv</co
     &#34;&#34;&#34;Updates droplet volumes by simulating condensation driven by prior changes
       in environment thermodynamic state, updates the environment state.
     In the case of parcel environment, condensation is driven solely by changes in
-      the dry-air density (theta and qv should not be changed by other dynamics).
+      the dry-air density (theta and water_vapour_mixing_ratio should not be changed
+      by other dynamics).
     In the case of prescribed-flow/kinematic environments, the dry-air density is
       constant in time throughout the simulation.
-    This function should only change environment&#39;s `thd` and `qv` (and not `rhod`).
+    This function should only change environment&#39;s predicted `thd` and
+      `water_vapour_mixing_ratio` (and not `rhod`).
     &#34;&#34;&#34;
     self.backend.condensation(
         solver=self.condensation_solver,
         n_cell=self.mesh.n_cell,
         cell_start_arg=self.attributes.cell_start,
         v=self.attributes[&#34;volume&#34;],
-        n=self.attributes[&#34;n&#34;],
+        multiplicity=self.attributes[&#34;multiplicity&#34;],
         vdry=self.attributes[&#34;dry volume&#34;],
         idx=self.attributes._ParticleAttributes__idx,
         rhod=self.environment[&#34;rhod&#34;],
         thd=self.environment[&#34;thd&#34;],
-        qv=self.environment[&#34;qv&#34;],
+        water_vapour_mixing_ratio=self.environment[&#34;water_vapour_mixing_ratio&#34;],
         dv=self.environment.dv,
         prhod=self.environment.get_predicted(&#34;rhod&#34;),
         pthd=self.environment.get_predicted(&#34;thd&#34;),
-        pqv=self.environment.get_predicted(&#34;qv&#34;),
+        predicted_water_vapour_mixing_ratio=self.environment.get_predicted(
+            &#34;water_vapour_mixing_ratio&#34;
+        ),
         kappa=self.attributes[&#34;kappa&#34;],
         f_org=self.attributes[&#34;dry volume organic fraction&#34;],
         rtol_x=rtol_x,
@@ -1206,7 +1224,7 @@ This function should only change environment's <code>thd</code> and <code>qv</co
         timestep=timestep,
         dv=self.mesh.dv,
         droplet_volume=self.attributes[&#34;volume&#34;],
-        multiplicity=self.attributes[&#34;n&#34;],
+        multiplicity=self.attributes[&#34;multiplicity&#34;],
         system_type=system_type,
         dissociation_factors=dissociation_factors,
     )
@@ -1295,7 +1313,7 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
     self.backend.moments(
         moment_0=moment_0,
         moments=moments,
-        multiplicity=self.attributes[&#34;n&#34;],
+        multiplicity=self.attributes[&#34;multiplicity&#34;],
         attr_data=attr_data,
         cell_id=self.attributes[&#34;cell id&#34;],
         idx=self.attributes._ParticleAttributes__idx,
@@ -1410,7 +1428,7 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
         cell_origin=self.attributes[&#34;cell origin&#34;],
         position_in_cell=self.attributes[&#34;position in cell&#34;],
         volume=self.attributes[&#34;volume&#34;],
-        multiplicity=self.attributes[&#34;n&#34;],
+        multiplicity=self.attributes[&#34;multiplicity&#34;],
         idx=self.attributes._ParticleAttributes__idx,
         length=self.attributes.super_droplet_count,
         healthy=self.attributes._ParticleAttributes__healthy_memory,
@@ -1484,7 +1502,7 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
     self.backend.spectrum_moments(
         moment_0=moment_0,
         moments=moments,
-        multiplicity=self.attributes[&#34;n&#34;],
+        multiplicity=self.attributes[&#34;multiplicity&#34;],
         attr_data=attr_data,
         cell_id=self.attributes[&#34;cell id&#34;],
         idx=self.attributes._ParticleAttributes__idx,
@@ -1511,7 +1529,9 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
         # input
         rhod=self.environment.get_predicted(&#34;rhod&#34;),
         thd=self.environment.get_predicted(&#34;thd&#34;),
-        qv=self.environment.get_predicted(&#34;qv&#34;),
+        water_vapour_mixing_ratio=self.environment.get_predicted(
+            &#34;water_vapour_mixing_ratio&#34;
+        ),
         # output
         T=self.environment.get_predicted(&#34;T&#34;),
         p=self.environment.get_predicted(&#34;p&#34;),

@@ -103,7 +103,7 @@ class Simulation:
         if self.settings.processes[&#34;fluid advection&#34;]:
             initial_profiles = {
                 &#34;th&#34;: self.settings.initial_dry_potential_temperature_profile,
-                &#34;qv&#34;: self.settings.initial_vapour_mixing_ratio_profile,
+                &#34;water_vapour_mixing_ratio&#34;: self.settings.initial_vapour_mixing_ratio_profile,
             }
             advectees = dict(
                 (
@@ -217,7 +217,7 @@ class Simulation:
                     if name == freezing_attribute:
                         attributes[name][orig] = array
                         attributes[name][copy] = 0
-                    elif name == &#34;n&#34;:
+                    elif name == &#34;multiplicity&#34;:
                         attributes[name][orig] = array * self.settings.freezing_inp_frac
                         attributes[name][copy] = array * (
                             1 - self.settings.freezing_inp_frac
@@ -336,7 +336,7 @@ class Simulation:
         if self.settings.processes[&#34;fluid advection&#34;]:
             initial_profiles = {
                 &#34;th&#34;: self.settings.initial_dry_potential_temperature_profile,
-                &#34;qv&#34;: self.settings.initial_vapour_mixing_ratio_profile,
+                &#34;water_vapour_mixing_ratio&#34;: self.settings.initial_vapour_mixing_ratio_profile,
             }
             advectees = dict(
                 (
@@ -450,7 +450,7 @@ class Simulation:
                     if name == freezing_attribute:
                         attributes[name][orig] = array
                         attributes[name][copy] = 0
-                    elif name == &#34;n&#34;:
+                    elif name == &#34;multiplicity&#34;:
                         attributes[name][orig] = array * self.settings.freezing_inp_frac
                         attributes[name][copy] = array * (
                             1 - self.settings.freezing_inp_frac
@@ -563,7 +563,7 @@ def products(self):
     if self.settings.processes[&#34;fluid advection&#34;]:
         initial_profiles = {
             &#34;th&#34;: self.settings.initial_dry_potential_temperature_profile,
-            &#34;qv&#34;: self.settings.initial_vapour_mixing_ratio_profile,
+            &#34;water_vapour_mixing_ratio&#34;: self.settings.initial_vapour_mixing_ratio_profile,
         }
         advectees = dict(
             (
@@ -677,7 +677,7 @@ def products(self):
                 if name == freezing_attribute:
                     attributes[name][orig] = array
                     attributes[name][copy] = 0
-                elif name == &#34;n&#34;:
+                elif name == &#34;multiplicity&#34;:
                     attributes[name][orig] = array * self.settings.freezing_inp_frac
                     attributes[name][copy] = array * (
                         1 - self.settings.freezing_inp_frac
