@@ -17,7 +17,7 @@ class ParcelSimulation(BasicSimulation):
             dt=settings.dt,
             mass_of_dry_air=settings.mass_of_dry_air,
             p0=settings.p0,
-            q0=settings.q0,
+            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
             T0=settings.T0,
             w=settings.w,
         )
@@ -113,12 +113,12 @@ class ParcelSimulation(BasicSimulation):
             self.particulator.run(step - self.particulator.n_steps)
             self._save_scalars(output)
         self._save_spectrum(output)
-        if self.settings.BDF:
-            output["Activated Fraction"] = self.particulator.products[
-                "activable fraction"
-            ].get(S_max=np.nanmax(output["RH"]) - 100)
-        else:
-            output["Activated Fraction"] = self.particulator.products[
-                "activable fraction"
-            ].get(S_max=np.nanmax(output["S_max"]))
+        # if self.settings.scipy_solver:
+        #     output["Activated Fraction"] = self.particulator.products[
+        #         "activable fraction"
+        #     ].get(S_max=np.nanmax(output["RH"]) - 100)
+        # else:
+        #     output["Activated Fraction"] = self.particulator.products[
+        #         "activable fraction"
+        #     ].get(S_max=np.nanmax(output["S_max"]))
         return output

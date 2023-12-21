@@ -62,4 +62,4 @@ class SzyszkowskiLangmuir:  # pylint: disable=too-few-public-methods
         return sgm
 
 
-SzyszkowskiLangmuir.sigma.__vectorize = True
+# SzyszkowskiLangmuir.sigma.__vectorize = True

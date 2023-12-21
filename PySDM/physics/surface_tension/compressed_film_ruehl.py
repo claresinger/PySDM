@@ -95,4 +95,4 @@ CompressedFilmRuehl.sigma.__extras = {
     "minfun": minfun,
     "within_tolerance": within_tolerance,
 }
-CompressedFilmRuehl.sigma.__vectorize = True
+# CompressedFilmRuehl.sigma.__vectorize = True
