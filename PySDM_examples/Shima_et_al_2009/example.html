@@ -42,8 +42,10 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum, WallTime
 
 
 def run(settings, backend=CPU, observers=()):
-    builder = Builder(n_sd=settings.n_sd, backend=backend(formulae=settings.formulae))
-    builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
+    env = Box(dv=settings.dv, dt=settings.dt)
+    builder = Builder(
+        n_sd=settings.n_sd, backend=backend(formulae=settings.formulae), environment=env
+    )
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
     attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = sampling.sample(settings.n_sd)
@@ -58,10 +60,6 @@ def run(settings, backend=CPU, observers=()):
         WallTime(),
     )
     particulator = builder.build(attributes, products)
-    if hasattr(settings, &#34;u_term&#34;) and &#34;terminal velocity&#34; in particulator.attributes:
-        particulator.attributes[&#34;terminal velocity&#34;].approximation = settings.u_term(
-            particulator
-        )
 
     for observer in observers:
         particulator.observers.append(observer)
@@ -149,8 +147,10 @@ if __name__ == &#34;__main__&#34;:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def run(settings, backend=CPU, observers=()):
-    builder = Builder(n_sd=settings.n_sd, backend=backend(formulae=settings.formulae))
-    builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
+    env = Box(dv=settings.dv, dt=settings.dt)
+    builder = Builder(
+        n_sd=settings.n_sd, backend=backend(formulae=settings.formulae), environment=env
+    )
     attributes = {}
     sampling = ConstantMultiplicity(settings.spectrum)
     attributes[&#34;volume&#34;], attributes[&#34;multiplicity&#34;] = sampling.sample(settings.n_sd)
@@ -165,10 +165,6 @@ if __name__ == &#34;__main__&#34;:
         WallTime(),
     )
     particulator = builder.build(attributes, products)
-    if hasattr(settings, &#34;u_term&#34;) and &#34;terminal velocity&#34; in particulator.attributes:
-        particulator.attributes[&#34;terminal velocity&#34;].approximation = settings.u_term(
-            particulator
-        )
 
     for observer in observers:
         particulator.observers.append(observer)

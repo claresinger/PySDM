@@ -147,7 +147,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
             cell_start_arg=self.attributes.cell_start,
-            v=self.attributes[&#34;volume&#34;],
+            water_mass=self.attributes[&#34;water mass&#34;],
             multiplicity=self.attributes[&#34;multiplicity&#34;],
             vdry=self.attributes[&#34;dry volume&#34;],
             idx=self.attributes._ParticleAttributes__idx,
@@ -172,7 +172,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             success=success,
             cell_id=self.attributes[&#34;cell id&#34;],
         )
-        self.attributes.mark_updated(&#34;volume&#34;)
+        self.attributes.mark_updated(&#34;water mass&#34;)
 
     def collision_coalescence_breakup(
         self,
@@ -182,7 +182,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         rand,
         Ec,
         Eb,
-        fragment_size,
+        fragment_mass,
         coalescence_rate,
         breakup_rate,
         breakup_rate_deficit,
@@ -205,7 +205,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 rand=rand,
                 Ec=Ec,
                 Eb=Eb,
-                fragment_size=fragment_size,
+                fragment_mass=fragment_mass,
                 healthy=healthy,
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
@@ -213,7 +213,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
                 warn_overflows=warn_overflows,
-                volume=self.attributes[&#34;volume&#34;],
+                particle_mass=self.attributes[&#34;water mass&#34;],
                 max_multiplicity=max_multiplicity,
             )
         else:
@@ -341,9 +341,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         moment_0,
         moments,
         specs: dict,
-        attr_name=&#34;volume&#34;,
+        attr_name=&#34;water mass&#34;,
         attr_range=(-np.inf, np.inf),
-        weighting_attribute=&#34;volume&#34;,
+        weighting_attribute=&#34;water mass&#34;,
         weighting_rank=0,
         skip_division_by_m0=False,
     ):
@@ -398,8 +398,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         attr,
         rank,
         attr_bins,
-        attr_name=&#34;volume&#34;,
-        weighting_attribute=&#34;volume&#34;,
+        attr_name=&#34;water mass&#34;,
+        weighting_attribute=&#34;water mass&#34;,
         weighting_rank=0,
     ):
         attr_data = self.attributes[attr]
@@ -466,7 +466,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 cell_origin=cell_origin,
                 position_in_cell=position_in_cell,
                 n_substeps=n_substeps,
-            )</code></pre>
+            )
+
+    def isotopic_fractionation(self, heavy_isotopes: tuple):
+        self.backend.isotopic_fractionation()
+        for isotope in heavy_isotopes:
+            self.attributes.mark_updated(f&#34;moles_{isotope}&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -595,7 +600,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
             cell_start_arg=self.attributes.cell_start,
-            v=self.attributes[&#34;volume&#34;],
+            water_mass=self.attributes[&#34;water mass&#34;],
             multiplicity=self.attributes[&#34;multiplicity&#34;],
             vdry=self.attributes[&#34;dry volume&#34;],
             idx=self.attributes._ParticleAttributes__idx,
@@ -620,7 +625,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             success=success,
             cell_id=self.attributes[&#34;cell id&#34;],
         )
-        self.attributes.mark_updated(&#34;volume&#34;)
+        self.attributes.mark_updated(&#34;water mass&#34;)
 
     def collision_coalescence_breakup(
         self,
@@ -630,7 +635,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         rand,
         Ec,
         Eb,
-        fragment_size,
+        fragment_mass,
         coalescence_rate,
         breakup_rate,
         breakup_rate_deficit,
@@ -653,7 +658,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 rand=rand,
                 Ec=Ec,
                 Eb=Eb,
-                fragment_size=fragment_size,
+                fragment_mass=fragment_mass,
                 healthy=healthy,
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
@@ -661,7 +666,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
                 warn_overflows=warn_overflows,
-                volume=self.attributes[&#34;volume&#34;],
+                particle_mass=self.attributes[&#34;water mass&#34;],
                 max_multiplicity=max_multiplicity,
             )
         else:
@@ -789,9 +794,9 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         moment_0,
         moments,
         specs: dict,
-        attr_name=&#34;volume&#34;,
+        attr_name=&#34;water mass&#34;,
         attr_range=(-np.inf, np.inf),
-        weighting_attribute=&#34;volume&#34;,
+        weighting_attribute=&#34;water mass&#34;,
         weighting_rank=0,
         skip_division_by_m0=False,
     ):
@@ -846,8 +851,8 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         attr,
         rank,
         attr_bins,
-        attr_name=&#34;volume&#34;,
-        weighting_attribute=&#34;volume&#34;,
+        attr_name=&#34;water mass&#34;,
+        weighting_attribute=&#34;water mass&#34;,
         weighting_rank=0,
     ):
         attr_data = self.attributes[attr]
@@ -914,7 +919,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 cell_origin=cell_origin,
                 position_in_cell=position_in_cell,
                 n_substeps=n_substeps,
-            )</code></pre>
+            )
+
+    def isotopic_fractionation(self, heavy_isotopes: tuple):
+        self.backend.isotopic_fractionation()
+        for isotope in heavy_isotopes:
+            self.attributes.mark_updated(f&#34;moles_{isotope}&#34;)</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -1057,7 +1067,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.collision_coalescence_breakup"><code class="name flex">
-<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, enable_breakup, gamma, rand, Ec, Eb, fragment_size, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows, max_multiplicity)</span>
+<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, enable_breakup, gamma, rand, Ec, Eb, fragment_mass, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows, max_multiplicity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1073,7 +1083,7 @@ def n_sd(self) -&gt; int:
     rand,
     Ec,
     Eb,
-    fragment_size,
+    fragment_mass,
     coalescence_rate,
     breakup_rate,
     breakup_rate_deficit,
@@ -1096,7 +1106,7 @@ def n_sd(self) -&gt; int:
             rand=rand,
             Ec=Ec,
             Eb=Eb,
-            fragment_size=fragment_size,
+            fragment_mass=fragment_mass,
             healthy=healthy,
             cell_id=cell_id,
             coalescence_rate=coalescence_rate,
@@ -1104,7 +1114,7 @@ def n_sd(self) -&gt; int:
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=warn_overflows,
-            volume=self.attributes[&#34;volume&#34;],
+            particle_mass=self.attributes[&#34;water mass&#34;],
             max_multiplicity=max_multiplicity,
         )
     else:
@@ -1159,7 +1169,7 @@ This function should only change environment's predicted <code>thd</code> and
         solver=self.condensation_solver,
         n_cell=self.mesh.n_cell,
         cell_start_arg=self.attributes.cell_start,
-        v=self.attributes[&#34;volume&#34;],
+        water_mass=self.attributes[&#34;water mass&#34;],
         multiplicity=self.attributes[&#34;multiplicity&#34;],
         vdry=self.attributes[&#34;dry volume&#34;],
         idx=self.attributes._ParticleAttributes__idx,
@@ -1184,7 +1194,7 @@ This function should only change environment's predicted <code>thd</code> and
         success=success,
         cell_id=self.attributes[&#34;cell id&#34;],
     )
-    self.attributes.mark_updated(&#34;volume&#34;)</code></pre>
+    self.attributes.mark_updated(&#34;water mass&#34;)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.dissolution"><code class="name flex">
@@ -1256,8 +1266,23 @@ This function should only change environment's predicted <code>thd</code> and
     self.attributes.sanitize()</code></pre>
 </details>
 </dd>
+<dt id="PySDM.particulator.Particulator.isotopic_fractionation"><code class="name flex">
+<span>def <span class="ident">isotopic_fractionation</span></span>(<span>self, heavy_isotopes: tuple)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def isotopic_fractionation(self, heavy_isotopes: tuple):
+    self.backend.isotopic_fractionation()
+    for isotope in heavy_isotopes:
+        self.attributes.mark_updated(f&#34;moles_{isotope}&#34;)</code></pre>
+</details>
+</dd>
 <dt id="PySDM.particulator.Particulator.moments"><code class="name flex">
-<span>def <span class="ident">moments</span></span>(<span>self, *, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-inf, inf), weighting_attribute='volume', weighting_rank=0, skip_division_by_m0=False)</span>
+<span>def <span class="ident">moments</span></span>(<span>self, *, moment_0, moments, specs: dict, attr_name='water mass', attr_range=(-inf, inf), weighting_attribute='water mass', weighting_rank=0, skip_division_by_m0=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Writes to <code>moment_0</code> and <code>moment</code> the zero-th and the k-th statistical moments
@@ -1278,9 +1303,9 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
     moment_0,
     moments,
     specs: dict,
-    attr_name=&#34;volume&#34;,
+    attr_name=&#34;water mass&#34;,
     attr_range=(-np.inf, np.inf),
-    weighting_attribute=&#34;volume&#34;,
+    weighting_attribute=&#34;water mass&#34;,
     weighting_rank=0,
     skip_division_by_m0=False,
 ):
@@ -1478,7 +1503,7 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.spectrum_moments"><code class="name flex">
-<span>def <span class="ident">spectrum_moments</span></span>(<span>self, *, moment_0, moments, attr, rank, attr_bins, attr_name='volume', weighting_attribute='volume', weighting_rank=0)</span>
+<span>def <span class="ident">spectrum_moments</span></span>(<span>self, *, moment_0, moments, attr, rank, attr_bins, attr_name='water mass', weighting_attribute='water mass', weighting_rank=0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1494,8 +1519,8 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
     attr,
     rank,
     attr_bins,
-    attr_name=&#34;volume&#34;,
-    weighting_attribute=&#34;volume&#34;,
+    attr_name=&#34;water mass&#34;,
+    weighting_attribute=&#34;water mass&#34;,
     weighting_rank=0,
 ):
     attr_data = self.attributes[attr]
@@ -1571,6 +1596,7 @@ multiplied by the 0-th moment (e.g., total volume instead of mean volume)</p></d
 <li><code><a title="PySDM.particulator.Particulator.dissolution" href="#PySDM.particulator.Particulator.dissolution">dissolution</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.dt" href="#PySDM.particulator.Particulator.dt">dt</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.flag_out_of_column" href="#PySDM.particulator.Particulator.flag_out_of_column">flag_out_of_column</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.isotopic_fractionation" href="#PySDM.particulator.Particulator.isotopic_fractionation">isotopic_fractionation</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.mesh" href="#PySDM.particulator.Particulator.mesh">mesh</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.moments" href="#PySDM.particulator.Particulator.moments">moments</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.n_sd" href="#PySDM.particulator.Particulator.n_sd">n_sd</a></code></li>

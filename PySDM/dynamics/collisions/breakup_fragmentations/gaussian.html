@@ -30,11 +30,14 @@
 <pre><code class="python">&#34;&#34;&#34;
 P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are volumes
 &#34;&#34;&#34;
+from .impl import VolumeBasedFragmentationFunction
 
 
-class Gaussian:  # pylint: disable=too-many-instance-attributes
+class Gaussian(
+    VolumeBasedFragmentationFunction
+):  # pylint: disable=too-many-instance-attributes
     def __init__(self, mu, sigma, vmin=0.0, nfmax=None):
-        self.particulator = None
+        super().__init__()
         self.mu = mu
         self.sigma = sigma
         self.vmin = vmin
@@ -42,12 +45,14 @@ class Gaussian:  # pylint: disable=too-many-instance-attributes
         self.sum_of_volumes = None
 
     def register(self, builder):
-        self.particulator = builder.particulator
+        super().register(builder)
         self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
 
-    def __call__(self, nf, frag_size, u01, is_first_in_pair):
+    def compute_fragment_number_and_volumes(
+        self, nf, frag_volume, u01, is_first_in_pair
+    ):
         self.sum_of_volumes.sum(
             self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
         )
@@ -55,7 +60,7 @@ class Gaussian:  # pylint: disable=too-many-instance-attributes
             n_fragment=nf,
             mu=self.mu,
             sigma=self.sigma,
-            frag_size=frag_size,
+            frag_volume=frag_volume,
             x_plus_y=self.sum_of_volumes,
             rand=u01,
             vmin=self.vmin,
@@ -82,9 +87,11 @@ class Gaussian:  # pylint: disable=too-many-instance-attributes
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Gaussian:  # pylint: disable=too-many-instance-attributes
+<pre><code class="python">class Gaussian(
+    VolumeBasedFragmentationFunction
+):  # pylint: disable=too-many-instance-attributes
     def __init__(self, mu, sigma, vmin=0.0, nfmax=None):
-        self.particulator = None
+        super().__init__()
         self.mu = mu
         self.sigma = sigma
         self.vmin = vmin
@@ -92,12 +99,14 @@ class Gaussian:  # pylint: disable=too-many-instance-attributes
         self.sum_of_volumes = None
 
     def register(self, builder):
-        self.particulator = builder.particulator
+        super().register(builder)
         self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
 
-    def __call__(self, nf, frag_size, u01, is_first_in_pair):
+    def compute_fragment_number_and_volumes(
+        self, nf, frag_volume, u01, is_first_in_pair
+    ):
         self.sum_of_volumes.sum(
             self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
         )
@@ -105,15 +114,46 @@ class Gaussian:  # pylint: disable=too-many-instance-attributes
             n_fragment=nf,
             mu=self.mu,
             sigma=self.sigma,
-            frag_size=frag_size,
+            frag_volume=frag_volume,
             x_plus_y=self.sum_of_volumes,
             rand=u01,
             vmin=self.vmin,
             nfmax=self.nfmax,
         )</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.dynamics.collisions.breakup_fragmentations.impl.volume_based.VolumeBasedFragmentationFunction" href="impl/volume_based.html#PySDM.dynamics.collisions.breakup_fragmentations.impl.volume_based.VolumeBasedFragmentationFunction">VolumeBasedFragmentationFunction</a></li>
+</ul>
 <h3>Methods</h3>
 <dl>
+<dt id="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.compute_fragment_number_and_volumes"><code class="name flex">
+<span>def <span class="ident">compute_fragment_number_and_volumes</span></span>(<span>self, nf, frag_volume, u01, is_first_in_pair)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_fragment_number_and_volumes(
+    self, nf, frag_volume, u01, is_first_in_pair
+):
+    self.sum_of_volumes.sum(
+        self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+    )
+    self.particulator.backend.gauss_fragmentation(
+        n_fragment=nf,
+        mu=self.mu,
+        sigma=self.sigma,
+        frag_volume=frag_volume,
+        x_plus_y=self.sum_of_volumes,
+        rand=u01,
+        vmin=self.vmin,
+        nfmax=self.nfmax,
+    )</code></pre>
+</details>
+</dd>
 <dt id="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
@@ -124,7 +164,7 @@ class Gaussian:  # pylint: disable=too-many-instance-attributes
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    self.particulator = builder.particulator
+    super().register(builder)
     self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
         self.particulator.n_sd // 2, dtype=float
     )</code></pre>
@@ -151,6 +191,7 @@ class Gaussian:  # pylint: disable=too-many-instance-attributes
 <li>
 <h4><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian" href="#PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian">Gaussian</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.compute_fragment_number_and_volumes" href="#PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.compute_fragment_number_and_volumes">compute_fragment_number_and_volumes</a></code></li>
 <li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.register" href="#PySDM.dynamics.collisions.breakup_fragmentations.gaussian.Gaussian.register">register</a></code></li>
 </ul>
 </li>
