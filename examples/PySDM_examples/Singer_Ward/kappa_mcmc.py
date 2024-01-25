@@ -5,7 +5,6 @@ from joblib import Parallel, delayed
 from scipy.optimize import minimize_scalar
 
 from PySDM import Formulae
-from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
 
 
@@ -22,7 +21,7 @@ def param_transform(mcmc_params, model):
 
     if model == "CompressedFilmOvadnevaite":
         film_params[0] = (
-            const.sgm_w / (1 + np.exp(-1 * mcmc_params[0])) / (si.mN / si.m)
+            Formulae().sgm_w / (1 + np.exp(-1 * mcmc_params[0])) / (si.mN / si.m)
         )
         film_params[1] = np.exp(mcmc_params[1])
     elif model == "CompressedFilmRuehl":
@@ -108,7 +107,9 @@ def get_model(params, args):
     # ))
 
     kap_eff = (
-        (2 * rcrit**2) / (3 * r_dry**3 * const.Rv * T * const.rho_w) * const.sgm_w
+        (2 * rcrit**2)
+        / (3 * r_dry**3 * formulae.Rv * T * formulae.rho_w)
+        * formulae.sgm_w
     )
 
     return kap_eff
