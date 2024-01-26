@@ -6,6 +6,7 @@ from numba import prange
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 from PySDM.backends.impl_numba import conf
+from PySDM.physics.surface_tension.compressed_film_ruehl import CompressedFilmRuehl
 
 
 class PhysicsMethods(BackendMethods):
@@ -30,7 +31,14 @@ class PhysicsMethods(BackendMethods):
 
         self.explicit_euler_body = explicit_euler_body
 
-        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        @numba.njit(
+            **{
+                **conf.JIT_FLAGS,
+                "fastmath": self.formulae.fastmath,
+                "parallel": self.formulae.surface_tension.__name__
+                != CompressedFilmRuehl.__name__,
+            }
+        )
         def critical_volume(*, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
             for i in prange(len(v_cr)):  # pylint: disable=not-an-iterable
                 sigma = phys_sigma(T[cell[i]], v_wet[i], v_dry[i], f_org[i])
