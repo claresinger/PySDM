@@ -8,7 +8,7 @@ from PySDM.physics import si
 
 @strict
 class AerosolBetaCaryophylleneDark(DryAerosolMixture):
-    def __init__(self, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
+    def __init__(self, *, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
         mode = {
             "(NH4)2SO4": (1 - Forg),
             "bcary_dark": Forg,
@@ -52,7 +52,7 @@ class AerosolBetaCaryophylleneDark(DryAerosolMixture):
 
 
 class AerosolBetaCaryophylleneLight(DryAerosolMixture):
-    def __init__(self, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
+    def __init__(self, *, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
         mode = {
             "(NH4)2SO4": (1 - Forg),
             "bcary_light": Forg,
@@ -97,7 +97,7 @@ class AerosolBetaCaryophylleneLight(DryAerosolMixture):
 
 @strict
 class AerosolAlphaPineneDark(DryAerosolMixture):
-    def __init__(self, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
+    def __init__(self, *, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
         mode = {
             "(NH4)2SO4": (1 - Forg),
             "apinene_dark": Forg,
@@ -142,7 +142,7 @@ class AerosolAlphaPineneDark(DryAerosolMixture):
 
 @strict
 class AerosolAlphaPineneLight(DryAerosolMixture):
-    def __init__(self, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
+    def __init__(self, *, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
         mode = {
             "(NH4)2SO4": (1 - Forg),
             "apinene_light": Forg,

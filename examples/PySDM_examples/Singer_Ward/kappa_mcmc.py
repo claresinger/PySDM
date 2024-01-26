@@ -21,7 +21,10 @@ def param_transform(mcmc_params, model):
 
     if model == "CompressedFilmOvadnevaite":
         film_params[0] = (
-            Formulae().sgm_w / (1 + np.exp(-1 * mcmc_params[0])) / (si.mN / si.m)
+            # TODO change parameter transormation to be order of magnitude.
+            Formulae().constants.sgm_w
+            / (1 + np.exp(-1 * mcmc_params[0]))
+            / (si.mN / si.m)
         )
         film_params[1] = np.exp(mcmc_params[1])
     elif model == "CompressedFilmRuehl":
@@ -108,8 +111,8 @@ def get_model(params, args):
 
     kap_eff = (
         (2 * rcrit**2)
-        / (3 * r_dry**3 * formulae.Rv * T * formulae.rho_w)
-        * formulae.sgm_w
+        / (3 * r_dry**3 * formulae.constants.Rv * T * formulae.constants.rho_w)
+        * formulae.constants.sgm_w
     )
 
     return kap_eff

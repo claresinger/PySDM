@@ -11,6 +11,9 @@ from PySDM.physics import si
 class Settings:
     def __init__(
         self,
+        *,
+        Mv: float,
+        rho_w: float,
         dz: float,
         n_sd_per_mode: int,
         aerosol: DryAerosolMixture,
@@ -39,6 +42,8 @@ class Settings:
                     "delta_min": 0.4 * si.nm,  # 0.1
                     "MAC": MAC,
                     "HAC": HAC,
+                    "Mv": Mv,
+                    "rho_w": rho_w,
                 },
             )
         elif model == "SzyszkowskiLangmuir":
@@ -51,6 +56,8 @@ class Settings:
                     "RUEHL_sgm_min": 21 * si.mN / si.m,  # 40
                     "MAC": MAC,
                     "HAC": HAC,
+                    "Mv": Mv,
+                    "rho_w": rho_w,
                 },
             )
         elif model == "CompressedFilmRuehl":
@@ -64,6 +71,8 @@ class Settings:
                     "RUEHL_m_sigma": 1.8e17 * si.J / si.m**2,  # 1.3
                     "MAC": MAC,
                     "HAC": HAC,
+                    "Mv": Mv,
+                    "rho_w": rho_w,
                 },
             )
         else:
