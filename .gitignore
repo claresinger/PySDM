@@ -138,3 +138,6 @@ dmypy.json
 
 #Jetbrains
 .idea/
+
+# ignore pdf figure outputs
+*.pdf
