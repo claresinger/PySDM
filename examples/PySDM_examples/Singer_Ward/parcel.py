@@ -1,10 +1,11 @@
 import numpy as np
+import warnings
+from numba.core.errors import NumbaExperimentalFeatureWarning
 from PySDM_examples.utils import BasicSimulation
 
 import PySDM.products as PySDM_products
 from PySDM import Builder
 from PySDM.backends import CPU
-from PySDM.backends.impl_numba.test_helpers import scipy_ode_condensation_solver
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
 from PySDM.initialisation import equilibrate_wet_radii
@@ -60,12 +61,14 @@ class ParcelSimulation(BasicSimulation):
             ).norm_factor,
             significant=5,
         )
-        r_wet = equilibrate_wet_radii(
-            r_dry=settings.formulae.trivia.radius(volume=attributes["dry volume"]),
-            environment=env,
-            kappa_times_dry_volume=attributes["kappa times dry volume"],
-            f_org=attributes["dry volume organic"] / attributes["dry volume"],
-        )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=NumbaExperimentalFeatureWarning)
+            r_wet = equilibrate_wet_radii(
+                r_dry=settings.formulae.trivia.radius(volume=attributes["dry volume"]),
+                environment=env,
+                kappa_times_dry_volume=attributes["kappa times dry volume"],
+                f_org=attributes["dry volume organic"] / attributes["dry volume"],
+            )
         attributes["volume"] = settings.formulae.trivia.volume(radius=r_wet)
 
         if settings.model == "Constant":
@@ -82,21 +85,26 @@ class ParcelSimulation(BasicSimulation):
             PySDM_products.ParticleConcentration(
                 name="n_c_cm3", unit="cm^-3", radius_range=settings.cloud_radius_range
             ),
+            PySDM_products.ActivatedParticleConcentration(
+                name="CDNC", unit="cm^-3", count_activated=True, count_unactivated=False
+            ),
             PySDM_products.ParticleSizeSpectrumPerVolume(
                 radius_bins_edges=settings.wet_radius_bins_edges
             ),
-            PySDM_products.ActivableFraction(),
+            PySDM_products.WaterMixingRatio(),
+            PySDM_products.AmbientDryAirDensity(name="rhod"),
+            # PySDM_products.ActivatedEffectiveRadius(
+            #     name="reff", count_activated=True, count_unactivated=False
+            # ),
         )
 
         particulator = builder.build(attributes=attributes, products=products)
-        if settings.scipy_solver:
-            scipy_ode_condensation_solver.patch_particulator(particulator)
         self.settings = settings
         super().__init__(particulator=particulator)
 
     def _save_scalars(self, output):
         for k, v in self.particulator.products.items():
-            if len(v.shape) > 1 or k == "activable fraction":
+            if len(v.shape) > 1:
                 continue
             value = v.get()
             if isinstance(value, np.ndarray) and value.size == 1:
@@ -110,15 +118,11 @@ class ParcelSimulation(BasicSimulation):
     def run(self):
         output = {k: [] for k in self.particulator.products}
         for step in self.settings.output_steps:
-            self.particulator.run(step - self.particulator.n_steps)
-            self._save_scalars(output)
+            with warnings.catch_warnings():  # TODO understand where these warnings are coming from
+                warnings.simplefilter(
+                    "ignore", category=NumbaExperimentalFeatureWarning
+                )
+                self.particulator.run(step - self.particulator.n_steps)
+                self._save_scalars(output)
         self._save_spectrum(output)
-        # if self.settings.scipy_solver:
-        #     output["Activated Fraction"] = self.particulator.products[
-        #         "activable fraction"
-        #     ].get(S_max=np.nanmax(output["RH"]) - 100)
-        # else:
-        #     output["Activated Fraction"] = self.particulator.products[
-        #         "activable fraction"
-        #     ].get(S_max=np.nanmax(output["S_max"]))
         return output

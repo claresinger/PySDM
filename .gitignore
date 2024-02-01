@@ -140,4 +140,5 @@ dmypy.json
 .idea/
 
 # ignore pdf figure outputs
+*.pkl
 *.pdf

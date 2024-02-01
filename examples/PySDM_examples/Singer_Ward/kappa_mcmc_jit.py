@@ -96,6 +96,16 @@ def get_model(params, args):
                 "delta_min": param_transform(params, model)[1] * si.nm,
             },
         )
+    elif model == "SzyszkowskiLangmuir":
+        formulae = Formulae(
+            surface_tension=model,
+            constants={
+                "RUEHL_nu_org": aerosol_list[0].modes[0]["nu_org"],
+                "RUEHL_A0": param_transform(params, model)[0] * si.m**2,
+                "RUEHL_C0": param_transform(params, model)[1],
+                "RUEHL_sgm_min": param_transform(params, model)[2] * si.mN / si.m,
+            },
+        )
     elif model == "CompressedFilmRuehl":
         formulae = Formulae(
             surface_tension=model,
@@ -105,16 +115,6 @@ def get_model(params, args):
                 "RUEHL_C0": param_transform(params, model)[1],
                 "RUEHL_sgm_min": param_transform(params, model)[2] * si.mN / si.m,
                 "RUEHL_m_sigma": param_transform(params, model)[3] * si.J / si.m**2,
-            },
-        )
-    elif model == "SzyszkowskiLangmuir":
-        formulae = Formulae(
-            surface_tension=model,
-            constants={
-                "RUEHL_nu_org": aerosol_list[0].modes[0]["nu_org"],
-                "RUEHL_A0": param_transform(params, model)[0] * si.m**2,
-                "RUEHL_C0": param_transform(params, model)[1],
-                "RUEHL_sgm_min": param_transform(params, model)[2] * si.mN / si.m,
             },
         )
     else:
@@ -148,9 +148,7 @@ def get_model(params, args):
         fun_within_tolerance,
     )
 
-    kap_eff = (
-        (2 * rcrit**2) / (3 * r_dry**3 * const.Rv * T * const.rho_w) * const.sgm_w
-    )
+    kap_eff = (2 * rcrit**2) / (3 * r_dry**3 * const.Rv * T * const.rho_w) * const.sgm_w
 
     return kap_eff
 
