@@ -19,6 +19,7 @@ class Settings:
         model: str,
         spectral_sampling: type(spec_sampling.SpectralSampling),
         w: float = 0.32 * si.m / si.s,
+        stc: dict = {},
     ):
         assert model in (
             "Constant",
@@ -29,9 +30,13 @@ class Settings:
         self.model = model
         self.n_sd_per_mode = n_sd_per_mode
 
+        self.stc = stc
         self.formulae = Formulae(
             surface_tension=model,
-            constants=SINGER_CONSTS,
+            constants={
+                **SINGER_CONSTS,
+                **stc,
+            },
         )
         const = self.formulae.constants
 
