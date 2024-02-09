@@ -1,4 +1,9 @@
 PySDM_examples/utils/temporary_files/*
+*.pdf
+*.nc
+*.pkl
+*.vtu
+*.vts
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -138,7 +143,3 @@ dmypy.json
 
 #Jetbrains
 .idea/
-
-# ignore pdf figure outputs
-*.pkl
-*.pdf
