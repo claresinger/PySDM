@@ -8,7 +8,14 @@ from PySDM.physics import si
 
 @strict
 class AerosolBetaCaryophylleneDark(DryAerosolMixture):
-    def __init__(self, *, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
+    def __init__(
+        self,
+        *,
+        water_molar_volume: float,
+        Forg: float = 0.8,
+        N_a: float = 200,
+        r_a: float = 50
+    ):
         mode = {
             "(NH4)2SO4": (1 - Forg),
             "bcary_dark": Forg,
@@ -43,7 +50,7 @@ class AerosolBetaCaryophylleneDark(DryAerosolMixture):
                 ),
                 "nu_org": self.nu_org(mode),
                 "spectrum": spectra.Lognormal(
-                    norm_factor=N / si.cm**3, m_mode=50.0 * si.nm, s_geom=1.75
+                    norm_factor=N_a / si.cm**3, m_mode=r_a * si.nm, s_geom=1.75
                 ),
             },
         )
@@ -52,7 +59,14 @@ class AerosolBetaCaryophylleneDark(DryAerosolMixture):
 
 
 class AerosolBetaCaryophylleneLight(DryAerosolMixture):
-    def __init__(self, *, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
+    def __init__(
+        self,
+        *,
+        water_molar_volume: float,
+        Forg: float = 0.8,
+        N_a: float = 200,
+        r_a: float = 50
+    ):
         mode = {
             "(NH4)2SO4": (1 - Forg),
             "bcary_light": Forg,
@@ -87,7 +101,7 @@ class AerosolBetaCaryophylleneLight(DryAerosolMixture):
                 ),
                 "nu_org": self.nu_org(mode),
                 "spectrum": spectra.Lognormal(
-                    norm_factor=N / si.cm**3, m_mode=50.0 * si.nm, s_geom=1.75
+                    norm_factor=N_a / si.cm**3, m_mode=r_a * si.nm, s_geom=1.75
                 ),
             },
         )
@@ -97,7 +111,14 @@ class AerosolBetaCaryophylleneLight(DryAerosolMixture):
 
 @strict
 class AerosolAlphaPineneDark(DryAerosolMixture):
-    def __init__(self, *, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
+    def __init__(
+        self,
+        *,
+        water_molar_volume: float,
+        Forg: float = 0.8,
+        N_a: float = 200,
+        r_a: float = 50
+    ):
         mode = {
             "(NH4)2SO4": (1 - Forg),
             "apinene_dark": Forg,
@@ -132,7 +153,7 @@ class AerosolAlphaPineneDark(DryAerosolMixture):
                 ),
                 "nu_org": self.nu_org(mode),
                 "spectrum": spectra.Lognormal(
-                    norm_factor=N / si.cm**3, m_mode=50.0 * si.nm, s_geom=1.75
+                    norm_factor=N_a / si.cm**3, m_mode=r_a * si.nm, s_geom=1.75
                 ),
             },
         )
@@ -142,7 +163,14 @@ class AerosolAlphaPineneDark(DryAerosolMixture):
 
 @strict
 class AerosolAlphaPineneLight(DryAerosolMixture):
-    def __init__(self, *, water_molar_volume: float, Forg: float = 0.8, N: float = 400):
+    def __init__(
+        self,
+        *,
+        water_molar_volume: float,
+        Forg: float = 0.8,
+        N_a: float = 200,
+        r_a: float = 50
+    ):
         mode = {
             "(NH4)2SO4": (1 - Forg),
             "apinene_light": Forg,
@@ -177,7 +205,7 @@ class AerosolAlphaPineneLight(DryAerosolMixture):
                 ),
                 "nu_org": self.nu_org(mode),
                 "spectrum": spectra.Lognormal(
-                    norm_factor=N / si.cm**3, m_mode=50.0 * si.nm, s_geom=1.75
+                    norm_factor=N_a / si.cm**3, m_mode=r_a * si.nm, s_geom=1.75
                 ),
             },
         )

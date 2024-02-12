@@ -53,12 +53,7 @@ class ParcelSimulation(BasicSimulation):
 
         np.testing.assert_approx_equal(
             np.sum(attributes["n"]) / V,
-            Sum(
-                tuple(
-                    settings.aerosol.modes[i]["spectrum"]
-                    for i in range(len(settings.aerosol.modes))
-                )
-            ).norm_factor,
+            Sum(tuple(mode["spectrum"] for mode in settings.aerosol.modes)).norm_factor,
             significant=5,
         )
         with warnings.catch_warnings():
