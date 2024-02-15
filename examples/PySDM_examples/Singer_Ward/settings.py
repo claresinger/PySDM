@@ -33,6 +33,8 @@ class Settings:
         self.stc = stc
         self.formulae = Formulae(
             surface_tension=model,
+            optical_albedo="Bohren1987",
+            optical_depth="Stephens1978",
             constants={
                 **SINGER_CONSTS,
                 **stc,
