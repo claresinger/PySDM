@@ -98,77 +98,77 @@ def plot_corner(param_chain, args):
     pylab.show()
 
 
-def plot_ovf_kappa_fit(param_chain, args, errorx, datay, errory):
-    _, _, ovf, c, model = args
+# def plot_ovf_kappa_fit(param_chain, args, errorx, datay, errory):
+#     _, _, ovf, c, model = args
 
-    # create aerosol
-    dat = np.zeros((len(ovf), 4))
+#     # create aerosol
+#     dat = np.zeros((len(ovf), 4))
 
-    pylab.figure(figsize=(10, 6))
+#     pylab.figure(figsize=(10, 6))
 
-    # before
-    kap_eff = get_model(param_chain[:, 0], args)
-    s = np.argsort(ovf)
-    dat[:, 0] = ovf[s]
-    dat[:, 2] = kap_eff[s]
-    pylab.plot(ovf[s], kap_eff[s], "b:", label="before")
+#     # before
+#     kap_eff = get_model(param_chain[:, 0], args)
+#     s = np.argsort(ovf)
+#     dat[:, 0] = ovf[s]
+#     dat[:, 2] = kap_eff[s]
+#     pylab.plot(ovf[s], kap_eff[s], "b:", label="before")
 
-    # after
-    kap_eff2 = get_model(param_chain[:, -1], args)
-    dat[:, 3] = kap_eff2[s]
-    pylab.plot(ovf[s], kap_eff2[s], "r-", label="after")
+#     # after
+#     kap_eff2 = get_model(param_chain[:, -1], args)
+#     dat[:, 3] = kap_eff2[s]
+#     pylab.plot(ovf[s], kap_eff2[s], "r-", label="after")
 
-    # data
-    s = np.argsort(ovf)
-    dat[:, 1] = datay[s]
-    pylab.errorbar(ovf, datay, yerr=errory, xerr=errorx, fmt="ko")
+#     # data
+#     s = np.argsort(ovf)
+#     dat[:, 1] = datay[s]
+#     pylab.errorbar(ovf, datay, yerr=errory, xerr=errorx, fmt="ko")
 
-    pylab.legend()
-    pylab.xlabel("Organic Volume Fraction")
-    pylab.ylabel(r"$\kappa_{eff}$", fontsize=20)
-    pylab.rcParams.update({"font.size": 15})
-    pylab.grid()
-    pylab.tight_layout()
+#     pylab.legend()
+#     pylab.xlabel("Organic Volume Fraction")
+#     pylab.ylabel(r"$\kappa_{eff}$", fontsize=20)
+#     pylab.rcParams.update({"font.size": 15})
+#     pylab.grid()
+#     pylab.tight_layout()
 
-    modelname = model.split("CompressedFilm")[-1]
-    aerosolname = c[0].__class__.__name__.split("Aerosol")[-1]
-    pylab.savefig(
-        "mcmc_output/" + aerosolname + "_" + modelname + "_fit.png",
-        dpi=200,
-        bbox_inches="tight",
-        facecolor="w",
-    )
-    pylab.show()
+#     modelname = model.split("CompressedFilm")[-1]
+#     aerosolname = c[0].__class__.__name__.split("Aerosol")[-1]
+#     pylab.savefig(
+#         "mcmc_output/" + aerosolname + "_" + modelname + "_fit.png",
+#         dpi=200,
+#         bbox_inches="tight",
+#         facecolor="w",
+#     )
+#     pylab.show()
 
 
-def plot_keff(param_chain, args, datay, errory):
-    pylab.figure(figsize=(10, 6))
+# def plot_keff(param_chain, args, datay, errory):
+#     pylab.figure(figsize=(10, 6))
 
-    # before
-    kap_eff = get_model(param_chain[:, 0], args)
+#     # before
+#     kap_eff = get_model(param_chain[:, 0], args)
 
-    # after
-    kap_eff2 = get_model(param_chain[:, -1], args)
+#     # after
+#     kap_eff2 = get_model(param_chain[:, -1], args)
 
-    pylab.figure(figsize=(7, 6))
-    pylab.errorbar(kap_eff, datay, yerr=errory, fmt="bo", label="before")
-    pylab.errorbar(kap_eff2, datay, yerr=errory, fmt="ro", label="after")
-    pylab.legend()
-    pylab.xlabel(r"$\kappa_{eff}$ modeled", fontsize=20)
-    pylab.ylabel(r"$\kappa_{eff}$ measured", fontsize=20)
-    pylab.plot([-0.05, 0.55], [-0.05, 0.55], "k-")
-    pylab.xlim([-0.05, 0.55])
-    pylab.ylim([-0.05, 0.55])
-    pylab.rcParams.update({"font.size": 15})
-    pylab.grid()
+#     pylab.figure(figsize=(7, 6))
+#     pylab.errorbar(kap_eff, datay, yerr=errory, fmt="bo", label="before")
+#     pylab.errorbar(kap_eff2, datay, yerr=errory, fmt="ro", label="after")
+#     pylab.legend()
+#     pylab.xlabel(r"$\kappa_{eff}$ modeled", fontsize=20)
+#     pylab.ylabel(r"$\kappa_{eff}$ measured", fontsize=20)
+#     pylab.plot([-0.05, 0.55], [-0.05, 0.55], "k-")
+#     pylab.xlim([-0.05, 0.55])
+#     pylab.ylim([-0.05, 0.55])
+#     pylab.rcParams.update({"font.size": 15})
+#     pylab.grid()
 
-    _, _, _, c, model = args
-    modelname = model.split("CompressedFilm")[-1]
-    aerosolname = c[0].__class__.__name__.split("Aerosol")[-1]
-    pylab.savefig(
-        "mcmc_output/" + aerosolname + "_" + modelname + "_keff.png",
-        dpi=200,
-        bbox_inches="tight",
-        facecolor="w",
-    )
-    pylab.show()
+#     _, _, _, c, model = args
+#     modelname = model.split("CompressedFilm")[-1]
+#     aerosolname = c[0].__class__.__name__.split("Aerosol")[-1]
+#     pylab.savefig(
+#         "mcmc_output/" + aerosolname + "_" + modelname + "_keff.png",
+#         dpi=200,
+#         bbox_inches="tight",
+#         facecolor="w",
+#     )
+#     pylab.show()
