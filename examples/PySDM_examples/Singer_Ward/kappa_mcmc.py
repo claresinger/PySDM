@@ -7,15 +7,22 @@ from scipy.optimize import minimize_scalar
 from PySDM import Formulae
 from PySDM.physics import si
 
+from PySDM_examples.Singer_Ward.constants_def import SINGER_CONSTS
 
-# parameter transformation so the MCMC parameters range from [-inf, inf]
-# but the compressed film parameters are bounded appropriately
-# for Ovadnevaite:
-# sgm_org = [0,72.8] and delta_min = [0,inf]
-# for Ruehl:
-# A0 = [0,inf], C0 = [0,inf], sgm_min = [0,inf], and m_sigma = [-inf,inf]
-# for SzyszkowskiLangmuir
-# A0 = [0,inf], C0 = [0,inf], and sgm_min = [0,inf]
+
+"""
+    parameter transformation so the MCMC parameters range from [-inf, inf]
+    but the compressed film parameters are bounded appropriately
+
+    for Ovadnevaite:
+        sgm_org = [0,72.8] and delta_min = [0,inf]
+    for Ruehl:
+        A0 = [0,inf], C0 = [0,inf], sgm_min = [0,inf], and m_sigma = [-inf,inf]
+    for SzyszkowskiLangmuir
+        A0 = [0,inf], C0 = [0,inf], and sgm_min = [0,inf]
+"""
+
+
 def param_transform(mcmc_params, model):
     film_params = np.copy(mcmc_params)
 
@@ -56,7 +63,11 @@ def negSS(r_wet, SS_args):
 #     return minimize_scalar(negSS, args=SS_args, bracket=bracket).x
 
 
-# evaluate the y-values of the model, given the current guess of parameter values
+"""
+    evaluate the y-values of the model, given the current guess of parameter values
+"""
+
+
 def get_model(params, args):
     T, r_dry, _, aerosol_list, model = args
     kappa = [ai.modes[0]["kappa"][model] for ai in aerosol_list]
@@ -69,6 +80,7 @@ def get_model(params, args):
             constants={
                 "sgm_org": param_transform(params, model)[0] * si.mN / si.m,
                 "delta_min": param_transform(params, model)[1] * si.nm,
+                **SINGER_CONSTS,
             },
         )
     elif model == "SzyszkowskiLangmuir":
@@ -79,6 +91,7 @@ def get_model(params, args):
                 "RUEHL_A0": param_transform(params, model)[0] * si.m**2,
                 "RUEHL_C0": param_transform(params, model)[1],
                 "RUEHL_sgm_min": param_transform(params, model)[2] * si.mN / si.m,
+                **SINGER_CONSTS,
             },
         )
     elif model == "CompressedFilmRuehl":
@@ -90,6 +103,7 @@ def get_model(params, args):
                 "RUEHL_C0": param_transform(params, model)[1],
                 "RUEHL_sgm_min": param_transform(params, model)[2] * si.mN / si.m,
                 "RUEHL_m_sigma": param_transform(params, model)[3] * si.J / si.m**2,
+                **SINGER_CONSTS,
             },
         )
     else:
@@ -118,19 +132,26 @@ def get_model(params, args):
     return kap_eff
 
 
-# obtain the chi2 value of the model y-values given current parameters
-# vs. the measured y-values
-# calculate chi2 not log likelihood
+"""
+    obtain the chi2 value of the model y-values given current parameters
+    vs. the measured y-values
+    calculate chi2 not log likelihood
+"""
+
+
 def get_chi2(params, args, y, error):
     model = get_model(params, args)
     chi2 = np.sum(((y - model) / error) ** 2)
     return chi2
 
 
-# propose a new parameter set
-# take a step in one paramter
-# of random length in random direction
-# with stepsize chosen from a normal distribution with width sigma
+"""
+    1. propose a new parameter set
+    2. take a step in one paramter of random length in random direction
+            with stepsize chosen from a normal distribution with width sigma
+"""
+
+
 def propose_param(current_param, stepsize):
     picker = int(np.floor(np.random.random(1) * len(current_param)))
     sigma = stepsize[picker]
@@ -146,7 +167,11 @@ def propose_param(current_param, stepsize):
     return try_param, picker
 
 
-# evaluate whether to step to the new trial value
+"""
+    evaluate whether to step to the new trial value
+"""
+
+
 def step_eval(params, stepsize, args, y, error):
     chi2_old = get_chi2(params, args, y, error)
     try_param, picker = propose_param(params, stepsize)
@@ -170,7 +195,11 @@ def step_eval(params, stepsize, args, y, error):
     return new_param, picker, accept_value, chi2_value
 
 
-# run the whole MCMC routine, calling the subroutines written above
+"""
+    run the whole MCMC routine, calling the subroutines written above
+"""
+
+
 def MCMC(params, stepsize, args, y, error, n_steps):
     param_chain = np.zeros((len(params), n_steps))
     accept_chain = np.empty((len(params), n_steps))
@@ -187,3 +216,35 @@ def MCMC(params, stepsize, args, y, error, n_steps):
         # print("step time: ", time.time() - t)
 
     return param_chain, accept_chain, chi2_chain
+
+
+"""
+    plotting options
+"""
+
+
+def model_options(model):
+    if model == "CompressedFilmOvadnevaite":
+        labels = ["$\sigma_{org}$ [mN / m]", "$\delta_{min}$ [nm]"]
+        scaling = [1, 1]
+        plot_order = [0, 1]
+    elif model == "SzyszkowskiLangmuir":
+        labels = [
+            "$A_0$ [m$^2$] $\\times 10^{20}$",
+            "$C_0 \\times 10^{6}$",
+            "$\sigma_{org}$ [mN / m]",
+        ]
+        scaling = [1e20, 1e6, 1]
+        plot_order = [1, 2, 0]
+    elif model == "CompressedFilmRuehl":
+        labels = [
+            "$A_0$ [m$^2$] $\\times 10^{20}$",
+            "$C_0 \\times 10^{6}$",
+            "$\sigma_{org}$ [mN / m]",
+            "$m_{\sigma}$ [J / m$^2$] $\\times 10^{-16}$",
+        ]
+        scaling = [1e20, 1e6, 1, 1e-16]
+        plot_order = [1, 2, 0, 3]
+    else:
+        raise AssertionError()
+    return labels, scaling, plot_order
