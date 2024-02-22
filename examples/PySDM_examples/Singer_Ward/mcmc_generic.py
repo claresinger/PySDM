@@ -10,6 +10,7 @@ from matplotlib import pyplot
 from corner import corner
 from open_atmos_jupyter_utils import show_plot
 from PySDM.physics import si
+from PySDM import Formulae
 
 from PySDM_examples.Singer_Ward.aerosol import (
     AerosolAlphaPineneDark,
@@ -18,10 +19,11 @@ from PySDM_examples.Singer_Ward.aerosol import (
     AerosolBetaCaryophylleneLight,
 )
 from PySDM_examples.Singer_Ward.kappa_mcmc import MCMC, param_transform, model_options
+from PySDM_examples.Singer_Ward.constants_def import SINGER_CONSTS, plot_names
 
 
 def mcmc_generic(
-    filename="bcary_dark.csv", model="CompressedFilmOvadnevaite", n_steps=200, plot=True
+    filename="bcary_dark.csv", model="CompressedFilmOvadnevaite", n_steps=200
 ):
     ######
     # open data file
@@ -54,14 +56,36 @@ def mcmc_generic(
     else:
         print("error model name not recognized")
 
+    FORMULAE = Formulae(constants=SINGER_CONSTS)
+
     if filename == "bcary_dark.csv":
-        aerosol_list = [AerosolBetaCaryophylleneDark(ovfi) for ovfi in ovf]
+        aerosol_list = [
+            AerosolBetaCaryophylleneDark(
+                Forg=ovfi, water_molar_volume=FORMULAE.constants.water_molar_volume
+            )
+            for ovfi in ovf
+        ]
     elif filename == "bcary_light.csv":
-        aerosol_list = [AerosolBetaCaryophylleneLight(ovfi) for ovfi in ovf]
+        aerosol_list = [
+            AerosolBetaCaryophylleneLight(
+                Forg=ovfi, water_molar_volume=FORMULAE.constants.water_molar_volume
+            )
+            for ovfi in ovf
+        ]
     elif filename == "apinene_dark.csv":
-        aerosol_list = [AerosolAlphaPineneDark(ovfi) for ovfi in ovf]
+        aerosol_list = [
+            AerosolAlphaPineneDark(
+                Forg=ovfi, water_molar_volume=FORMULAE.constants.water_molar_volume
+            )
+            for ovfi in ovf
+        ]
     elif filename == "apinene_light.csv":
-        aerosol_list = [AerosolAlphaPineneLight(ovfi) for ovfi in ovf]
+        aerosol_list = [
+            AerosolAlphaPineneLight(
+                Forg=ovfi, water_molar_volume=FORMULAE.constants.water_molar_volume
+            )
+            for ovfi in ovf
+        ]
     else:
         print("error aerosol type doesn't exist")
     args = [T, r_dry, ovf, aerosol_list, model]
@@ -88,20 +112,10 @@ def mcmc_generic(
     if not os.path.isdir("mcmc_output/"):
         os.mkdir("mcmc_output/")
 
-    modelname = model.split("CompressedFilm")[-1]
-    aerosolname = aerosol_list[0].__class__.__name__.split("Aerosol")[-1]
-
     # save parameter chain to text file
-    filename = (
-        "mcmc_output/"
-        + aerosolname
-        + "_"
-        + modelname
-        + "_chain"
-        + str(np.max(np.shape(param_chain)))
-        + ".csv"
-    )
-    np.savetxt(filename, param_chain.T, fmt="%.6e", delimiter=",")
+    aerosolname = filename.split(".csv")[0]
+    fileroot = f"mcmc_output/{aerosolname}_{plot_names[model]}_n{n_steps}"
+    np.savetxt(fileroot + "_chain.csv", param_chain.T, fmt="%.6e", delimiter=",")
 
     # plot parameter chain
     if model == "CompressedFilmOvadnevaite":
@@ -115,16 +129,18 @@ def mcmc_generic(
 
     labels, scaling, _ = model_options(model)
 
+    ninit = 100
     for i, ax in enumerate(axes.flatten()):
-        p[i, 0:100] = np.nan
-        ax.plot(p[i, :] * scaling[i])
+        ax.plot(p[i, :ninit] * scaling[i], color="k", alpha=0.3)
+        p[i, :ninit] = np.nan
+        ax.plot(p[i, :] * scaling[i], color="k")
         ax.set_ylabel(labels[i])
         ax.grid()
-    show_plot("mcmc_output/" + aerosolname + "_" + modelname + "_chain.png", dpi=200)
+    show_plot(fileroot + "_chain.pdf")
 
     # plot corner plot of parameter distributions
-    data = p.T[100:, :]
-    labels, scaling = model_options(model)
+    data = p.T[ninit:, :]
+    labels, scaling, _ = model_options(model)
 
     pyplot.rcParams.update({"font.size": 12})
     _ = corner(
@@ -136,4 +152,4 @@ def mcmc_generic(
         title_fmt=".1f",
         title_kwargs={"fontsize": 12},
     )
-    show_plot("mcmc_output/" + aerosolname + "_" + modelname + "_corner.png", dpi=200)
+    show_plot(fileroot + "_corner.pdf")
