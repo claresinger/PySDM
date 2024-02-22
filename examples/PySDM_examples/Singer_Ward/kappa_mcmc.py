@@ -1,15 +1,14 @@
 import time
 import numpy as np
-import numba
 
 from joblib import Parallel, delayed
 from scipy.optimize import minimize_scalar
-
-from PySDM import Formulae
-from PySDM.physics import si
+import numba
 from PySDM.backends.impl_numba.conf import JIT_FLAGS as jit_flags
 from PySDM.backends.impl_numba.toms748 import toms748_solve
 
+from PySDM import Formulae
+from PySDM.physics import si
 from PySDM_examples.Singer_Ward.constants_def import SINGER_CONSTS
 
 
@@ -18,65 +17,46 @@ from PySDM_examples.Singer_Ward.constants_def import SINGER_CONSTS
     but the compressed film parameters are bounded appropriately
 
     for Ovadnevaite:
-        sgm_org = [0,72.8] and delta_min = [0,inf]
+        sgm_org = [0,100] mN/m and delta_min = [0,inf]
     for Ruehl:
-        A0 = [0,inf], C0 = [0,inf], sgm_min = [0,inf], and m_sigma = [-inf,inf]
+        A0 = [-inf,inf], C0 = [0,inf], sgm_min = [0,100] mN/m, and m_sigma = [-inf,inf]
     for SzyszkowskiLangmuir
-        A0 = [0,inf], C0 = [0,inf], and sgm_min = [0,inf]
+        A0 = [-inf,inf], C0 = [0,inf], and sgm_min = [0,100] mN/m
 """
+
+
+def sigmoid(max_y, x):
+    return max_y / (1 + np.exp(-1 * x))
 
 
 def param_transform(mcmc_params, model):
     film_params = np.copy(mcmc_params)
 
     if model == "CompressedFilmOvadnevaite":
-        film_params[0] = (
-            # TODO change parameter transormation to be order of magnitude.
-            Formulae().constants.sgm_w
-            / (1 + np.exp(-1 * mcmc_params[0]))
-            / (si.mN / si.m)
-        )
+        film_params[0] = sigmoid(1e2, mcmc_params[0])
         film_params[1] = np.exp(mcmc_params[1])
-    elif model == "CompressedFilmRuehl":
-        film_params[0] = mcmc_params[0] * 1e-20
-        film_params[1] = np.exp(mcmc_params[1])
-        film_params[2] = np.exp(mcmc_params[2])
-        film_params[3] = mcmc_params[3] * 1e17
     elif model == "SzyszkowskiLangmuir":
         film_params[0] = mcmc_params[0] * 1e-20
         film_params[1] = np.exp(mcmc_params[1])
-        film_params[2] = np.exp(mcmc_params[2])
+        film_params[2] = sigmoid(1e2, mcmc_params[2])
+    elif model == "CompressedFilmRuehl":
+        film_params[0] = mcmc_params[0] * 1e-20
+        film_params[1] = np.exp(mcmc_params[1])
+        film_params[2] = sigmoid(1e2, mcmc_params[2])
+        film_params[3] = mcmc_params[3] * 1e17
     else:
         raise AssertionError()
 
     return film_params
 
 
-def negSS(r_wet, SS_args):
-    formulae, T, r_dry, kappa, f_org = SS_args
-    v_dry = formulae.trivia.volume(r_dry)
-    v_wet = formulae.trivia.volume(r_wet)
-    sigma = formulae.surface_tension.sigma(T, v_wet, v_dry, f_org)
-    RH_eq = formulae.hygroscopicity.RH_eq(r_wet, T, kappa, r_dry**3, sigma)
-    SS = (RH_eq - 1) * 100
-    return -1 * SS
-
-
-# def get_rcrit(SS_args, bracket):
-#     return minimize_scalar(negSS, args=SS_args, bracket=bracket).x
-
-
 """
-    evaluate the y-values of the model, given the current guess of parameter values
+    return formulae object given the surface tension model and model parameters
 """
 
 
-def get_model(params, args):
-    T, r_dry, _, aerosol_list, model = args
-    kappa = [ai.modes[0]["kappa"][model] for ai in aerosol_list]
-    forg = [ai.modes[0]["f_org"] for ai in aerosol_list]
+def get_formulae(model, params, aerosol_list):
     nu_org = aerosol_list[0].modes[0]["nu_org"]
-
     if model == "CompressedFilmOvadnevaite":
         formulae = Formulae(
             surface_tension=model,
@@ -111,6 +91,40 @@ def get_model(params, args):
         )
     else:
         raise AssertionError()
+
+    return formulae
+
+
+"""
+    helper for rcrit minimization returns -1*supersaturation
+"""
+
+
+def negSS(r_wet, SS_args):
+    formulae, T, r_dry, kappa, f_org = SS_args
+    v_dry = formulae.trivia.volume(r_dry)
+    v_wet = formulae.trivia.volume(r_wet)
+    sigma = formulae.surface_tension.sigma(T, v_wet, v_dry, f_org)
+    RH_eq = formulae.hygroscopicity.RH_eq(r_wet, T, kappa, r_dry**3, sigma)
+    SS = (RH_eq - 1) * 100
+    return -1 * SS
+
+
+# def get_rcrit(SS_args, bracket):
+#     return minimize_scalar(negSS, args=SS_args, bracket=bracket).x
+
+
+"""
+    evaluate the y-values of the model, given the current guess of parameter values
+"""
+
+
+def get_model(params, args):
+    T, r_dry, _, aerosol_list, model = args
+    kappa = [ai.modes[0]["kappa"][model] for ai in aerosol_list]
+    forg = [ai.modes[0]["f_org"] for ai in aerosol_list]
+
+    formulae = get_formulae(model, params, aerosol_list)
 
     rcrit = np.zeros(len(r_dry))
     for i, rd in enumerate(r_dry):
@@ -195,41 +209,10 @@ def parallel_block(
 
 def get_model_jit(params, args):
     T, r_dry, _, aerosol_list, model = args
+    kappas = np.asarray([ai.modes[0]["kappa"][model] for ai in aerosol_list])
+    f_orgs = np.asarray([ai.modes[0]["f_org"] for ai in aerosol_list])
 
-    if model == "CompressedFilmOvadnevaite":
-        formulae = Formulae(
-            surface_tension=model,
-            constants={
-                "sgm_org": param_transform(params, model)[0] * si.mN / si.m,
-                "delta_min": param_transform(params, model)[1] * si.nm,
-                **SINGER_CONSTS,
-            },
-        )
-    elif model == "SzyszkowskiLangmuir":
-        formulae = Formulae(
-            surface_tension=model,
-            constants={
-                "RUEHL_nu_org": aerosol_list[0].modes[0]["nu_org"],
-                "RUEHL_A0": param_transform(params, model)[0] * si.m**2,
-                "RUEHL_C0": param_transform(params, model)[1],
-                "RUEHL_sgm_min": param_transform(params, model)[2] * si.mN / si.m,
-                **SINGER_CONSTS,
-            },
-        )
-    elif model == "CompressedFilmRuehl":
-        formulae = Formulae(
-            surface_tension=model,
-            constants={
-                "RUEHL_nu_org": aerosol_list[0].modes[0]["nu_org"],
-                "RUEHL_A0": param_transform(params, model)[0] * si.m**2,
-                "RUEHL_C0": param_transform(params, model)[1],
-                "RUEHL_sgm_min": param_transform(params, model)[2] * si.mN / si.m,
-                "RUEHL_m_sigma": param_transform(params, model)[3] * si.J / si.m**2,
-                **SINGER_CONSTS,
-            },
-        )
-    else:
-        raise AssertionError()
+    formulae = get_formulae(model, params, aerosol_list)
 
     fun_within_tolerance = formulae.trivia.within_tolerance
     fun_volume = formulae.trivia.volume
@@ -239,11 +222,6 @@ def get_model_jit(params, args):
     N_meas = len(r_dry)
     max_iters = 1e2
     rtol = 1e-2
-
-    kappas = np.asarray(
-        [aerosol_list[i].modes[0]["kappa"][model] for i in range(len(r_dry))]
-    )
-    f_orgs = np.asarray([aerosol_list[i].modes[0]["f_org"] for i in range(len(r_dry))])
 
     rcrit = parallel_block(
         T,
@@ -344,7 +322,7 @@ def MCMC(params, stepsize, args, y, error, n_steps):
     chi2_chain = np.zeros(n_steps)
 
     for i in np.arange(n_steps):
-        t = time.time()
+        # t = time.time()
         param_chain[:, i], ind, accept_value, chi2_chain[i] = step_eval(
             params, stepsize, args, y, error
         )

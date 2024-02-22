@@ -90,8 +90,7 @@ def mcmc_generic(
         print("error aerosol type doesn't exist")
     args = [T, r_dry, ovf, aerosol_list, model]
 
-    print(param_transform(params, model))
-    print(params)
+    print(f"initial params: {params} \t = \t {param_transform(params, model)}")
 
     ######
     # run MCMC
@@ -103,8 +102,7 @@ def mcmc_generic(
         )
     p = param_transform(param_chain, model)
 
-    print(p[:, -1])
-    print(param_chain[:, -1])
+    print(f"final params: {param_chain[:, -1]} \t = \t {p[:, -1]}")
 
     ######
     # plot and save results
