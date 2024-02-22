@@ -54,7 +54,7 @@ def parallel_block(
 
 
 # evaluate the y-values of the model, given the current guess of parameter values
-def get_model(params, args):
+def get_model_jit(params, args):
     T, r_dry, _, aerosol_list, model = args
 
     if model == "CompressedFilmOvadnevaite":
