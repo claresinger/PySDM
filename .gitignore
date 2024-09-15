@@ -1,3 +1,11 @@
+# organics example
+examples/PySDM_examples/Singer_Ward/data
+examples/PySDM_examples/Singer_Ward/mcmc_output
+examples/PySDM_examples/Singer_Ward/AGU2021_mcmc_output
+examples/PySDM_examples/Singer_Ward/AGU2021-plots-Ryan
+examples/PySDM_examples/Singer_Ward/AMS2023_mcmc_output
+examples/PySDM_examples/Singer_Ward/AMS2023_mcmc_output_test
+
 PySDM_examples/utils/temporary_files/*
 *.pdf
 *.nc
