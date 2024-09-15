@@ -9,10 +9,14 @@ from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.dynamics.condensation import Condensation
 from PySDM.impl.mesh import Mesh
+from PySDM.environments.impl import register_environment
 
 
+@register_environment()
 class _TestEnv:
-    def __init__(self, *, dt, dv, rhod, thd, water_vapour_mixing_ratio, T, p, RH):
+    def __init__(
+        self, *, dt, dv, rhod, thd, water_vapour_mixing_ratio, T, p, RH, rho, eta
+    ):
         self.mesh = Mesh.mesh_0d()
         self.full = None
         self.particulator = None
@@ -25,6 +29,8 @@ class _TestEnv:
             "T": T,
             "p": p,
             "RH": RH,
+            "air density": rho,
+            "air dynamic viscosity": eta,
         }
 
     def register(self, builder):
@@ -58,6 +64,8 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
         RH=np.nan,
         dry_volume=np.nan,
         wet_radius=np.nan,
+        rho=np.nan,
+        eta=np.nan,
     ):
         env = _TestEnv(
             dt=dt,
@@ -68,6 +76,8 @@ class _TestParticulator:  # pylint: disable=too-few-public-methods
             T=T,
             p=p,
             RH=RH,
+            rho=rho,
+            eta=eta,
         )
         builder = Builder(n_sd=n_sd, backend=backend(), environment=env)
 

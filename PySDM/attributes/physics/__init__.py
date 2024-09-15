@@ -9,10 +9,12 @@ from .dry_radius import DryRadius
 from .dry_volume import DryVolume
 from .equilibrium_supersaturation import EquilibriumSupersaturation
 from .heat import Heat
-from .mass import WaterMass
-from .multiplicities import Multiplicities
+from .hygroscopicity import Kappa, KappaTimesDryVolume
+from .water_mass import WaterMass
+from .multiplicity import Multiplicity
 from .radius import Radius, SquareRootOfRadius
 from .relative_fall_velocity import RelativeFallMomentum, RelativeFallVelocity
 from .temperature import Temperature
 from .terminal_velocity import TerminalVelocity
 from .volume import Volume
+from .reynolds_number import ReynoldsNumber

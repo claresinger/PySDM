@@ -1,25 +1,31 @@
+from typing import Optional
+
 from pystrict import strict
 from PySDM import Formulae
 from PySDM.physics import si
 from PySDM.initialisation.spectra import Lognormal, Sum
 
+INITIAL_RELATIVE_HUMIDITY = 0.8561
+INITIAL_TEMPERATURE = 284.3 * si.K
+INITIAL_PRESSURE = 938.5 * si.hPa
+INITIAL_ALTITUDE = 600 * si.metres
+
 
 @strict
 class Settings:
-    def __init__(self, *, aerosol: str, cloud_type: str):
-        # TODO #1266 reuse these values in the Yang et al. '18 example which is based on J&N'16
-        self.p0 = 938.5 * si.hPa
-        self.RH0 = 0.8561
-        self.T0 = 284.3 * si.K
-        self.z0 = 600 * si.m
+    def __init__(self, *, aerosol: str, cloud_type: str, dt: Optional[float] = None):
+        self.p0 = INITIAL_PRESSURE
+        self.RH0 = INITIAL_RELATIVE_HUMIDITY
+        self.T0 = INITIAL_TEMPERATURE
+        self.z0 = INITIAL_ALTITUDE
         self.t_end_of_ascent = 1500 * si.s if cloud_type == "Sc" else None
-        self.dt = 1 * si.s  # TODO #1266: not found in the paper yet
+        self.dt = dt or 1 * si.s  # TODO #1266: not found in the paper yet
 
         self.kappa = 1.28  # Table 1 from Petters & Kreidenweis 2007
 
         self.formulae = Formulae(
             saturation_vapour_pressure="FlatauWalkoCotton",  # TODO #1266: Bolton
-            diffusion_kinetics="JensenAndNugent2017",
+            diffusion_kinetics="GrabowskiEtAl2011",
             diffusion_thermics="GrabowskiEtAl2011",
             constants={
                 # values from appendix B
