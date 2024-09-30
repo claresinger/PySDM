@@ -13,15 +13,15 @@ from PySDM_examples.Singer_Ward.constants_def import SINGER_CONSTS
 
 
 """
-    parameter transformation so the MCMC parameters range from [-inf, inf]
-    but the compressed film parameters are bounded appropriately
+    parameter transformation so the MCMC parameters range from [-inf,inf]
+    but the compressed film parameters are bounded reasonably
 
     for Ovadnevaite:
-        sgm_org = [0,100] mN/m and delta_min = [0,inf]
-    for Ruehl:
-        A0 = [-inf,inf], C0 = [0,inf], sgm_min = [0,100] mN/m, and m_sigma = [-inf,inf]
+        sgm_org = [0,0.08] J/m2 and delta_min = [0,1] nm = [0,1e-9] m
     for SzyszkowskiLangmuir
-        A0 = [-inf,inf], C0 = [0,inf], and sgm_min = [0,100] mN/m
+        A0 = [0,200] Å2 = [0,200e-20] m2, C0 = [0,10e6], and sgm_min = [0,0.08] J/m2
+    for Ruehl:
+        A0 = [0,2e-18] m2, C0 = [0,10e6], sgm_min = [0,0.08] J/m2, and m_sigma = [0,50e-16] J/m4
 """
 
 
@@ -32,18 +32,33 @@ def sigmoid(max_y, x):
 def param_transform(mcmc_params, model):
     film_params = np.copy(mcmc_params)
 
+    # if model == "CompressedFilmOvadnevaite":
+    #     film_params[0] = sigmoid(72, mcmc_params[0])
+    #     film_params[1] = np.exp(mcmc_params[1])
+    # elif model == "SzyszkowskiLangmuir":
+    #     film_params[0] = mcmc_params[0] * 1e-20
+    #     film_params[1] = np.exp(mcmc_params[1])
+    #     film_params[2] = np.exp(mcmc_params[2])
+    # elif model == "CompressedFilmRuehl":
+    #     film_params[0] = mcmc_params[0] * 1e-20
+    #     film_params[1] = np.exp(mcmc_params[1])
+    #     film_params[2] = np.exp(mcmc_params[2])
+    #     film_params[3] = mcmc_params[3] * 1e17
+    # else:
+    #     raise AssertionError()
+
     if model == "CompressedFilmOvadnevaite":
-        film_params[0] = sigmoid(1e2, mcmc_params[0])
-        film_params[1] = np.exp(mcmc_params[1])
+        film_params[0] = mcmc_params[0]
+        film_params[1] = mcmc_params[1]
     elif model == "SzyszkowskiLangmuir":
-        film_params[0] = mcmc_params[0] * 1e-20
+        film_params[0] = mcmc_params[0]
         film_params[1] = np.exp(mcmc_params[1])
-        film_params[2] = sigmoid(1e2, mcmc_params[2])
+        film_params[2] = mcmc_params[2]
     elif model == "CompressedFilmRuehl":
-        film_params[0] = mcmc_params[0] * 1e-20
+        film_params[0] = mcmc_params[0]
         film_params[1] = np.exp(mcmc_params[1])
-        film_params[2] = sigmoid(1e2, mcmc_params[2])
-        film_params[3] = mcmc_params[3] * 1e17
+        film_params[2] = mcmc_params[2]
+        film_params[3] = mcmc_params[3]
     else:
         raise AssertionError()
 
@@ -61,32 +76,32 @@ def get_formulae(model, params, aerosol_list):
         formulae = Formulae(
             surface_tension=model,
             constants={
-                "sgm_org": param_transform(params, model)[0] * si.mN / si.m,
-                "delta_min": param_transform(params, model)[1] * si.nm,
                 **SINGER_CONSTS,
+                "sgm_org": param_transform(params, model)[0] * si.J / si.m**2,
+                "delta_min": param_transform(params, model)[1] * si.m,
             },
         )
     elif model == "SzyszkowskiLangmuir":
         formulae = Formulae(
             surface_tension=model,
             constants={
+                **SINGER_CONSTS,
                 "RUEHL_nu_org": nu_org,
                 "RUEHL_A0": param_transform(params, model)[0] * si.m**2,
                 "RUEHL_C0": param_transform(params, model)[1],
-                "RUEHL_sgm_min": param_transform(params, model)[2] * si.mN / si.m,
-                **SINGER_CONSTS,
+                "RUEHL_sgm_min": param_transform(params, model)[2] * si.J / si.m**2,
             },
         )
     elif model == "CompressedFilmRuehl":
         formulae = Formulae(
             surface_tension=model,
             constants={
+                **SINGER_CONSTS,
                 "RUEHL_nu_org": nu_org,
                 "RUEHL_A0": param_transform(params, model)[0] * si.m**2,
                 "RUEHL_C0": param_transform(params, model)[1],
-                "RUEHL_sgm_min": param_transform(params, model)[2] * si.mN / si.m,
-                "RUEHL_m_sigma": param_transform(params, model)[3] * si.J / si.m**2,
-                **SINGER_CONSTS,
+                "RUEHL_sgm_min": param_transform(params, model)[2] * si.J / si.m**2,
+                "RUEHL_m_sigma": param_transform(params, model)[3] * si.J / si.m**4,
             },
         )
     else:
@@ -340,25 +355,28 @@ def MCMC(params, stepsize, args, y, error, n_steps):
 
 def model_options(model):
     if model == "CompressedFilmOvadnevaite":
-        labels = ["$\sigma_{org}$ [mN / m]", "$\delta_{min}$ [nm]"]
-        scaling = [1, 1]
+        labels = [
+            "$\sigma_{org} \\times 10^{3}$ [J m$^{-2}$]",
+            "$\delta_{min} \\times 10^{10}$ [m]",
+        ]
+        scaling = [1e3, 1e10]
         plot_order = [0, 1]
     elif model == "SzyszkowskiLangmuir":
         labels = [
-            "$A_0$ [m$^2$] $\\times 10^{20}$",
+            "$A_0 \\times 10^{20}$ [m$^2$]",
             "$C_0 \\times 10^{6}$",
-            "$\sigma_{org}$ [mN / m]",
+            "$\sigma_{org} \\times 10^{3}$ [J m$^{-2}$]",
         ]
-        scaling = [1e20, 1e6, 1]
+        scaling = [1e20, 1e6, 1e3]
         plot_order = [1, 2, 0]
     elif model == "CompressedFilmRuehl":
         labels = [
-            "$A_0$ [m$^2$] $\\times 10^{20}$",
+            "$A_0 \\times 10^{20}$ [m$^2$]",
             "$C_0 \\times 10^{6}$",
-            "$\sigma_{org}$ [mN / m]",
-            "$m_{\sigma}$ [J / m$^2$] $\\times 10^{-16}$",
+            "$\sigma_{org} \\times 10^{3}$ [J m$^{-2}$]",
+            "$m_{\sigma} \\times 10^{-16}$ [J m$^{-4}$]",
         ]
-        scaling = [1e20, 1e6, 1, 1e-16]
+        scaling = [1e20, 1e6, 1e3, 1e-16]
         plot_order = [1, 2, 0, 3]
     else:
         raise AssertionError()

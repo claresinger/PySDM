@@ -45,16 +45,42 @@ def mcmc_generic(
     # set up MCMC
     ######
     if model == "CompressedFilmOvadnevaite":
-        params = [-1.0, -0.5]  # [0.5, 0.2]
-        stepsize = [0.1, 0.05]
+        params = [25e-3, 4e-10]
+        stepsize = params * 0.05
     elif model == "SzyszkowskiLangmuir":
-        params = [75, -14, 3.2]  # [25, -11.4, 3.7]
-        stepsize = [0.5, 0.1, 0.05]
+        params = [75e-20, -15, 25e-3]
+        stepsize = params * 0.05
+        stepsize[1] = 0.1
     elif model == "CompressedFilmRuehl":
-        params = [75, -14, 3.2, 1.0]  # [15, -11.5, 3.5, 1.0]
-        stepsize = [0.5, 0.1, 0.05, 0.05]
+        params = [75e-20, -15, 25e-3, 20e16]
+        stepsize = params * 0.05
+        stepsize[1] = 0.1
     else:
         print("error model name not recognized")
+
+    # if model == "CompressedFilmOvadnevaite":
+    #     params = [-0.2, -1.0]
+    #     stepsize = 0.05 * np.ones(2)
+    # elif model == "SzyszkowskiLangmuir":
+    #     params = np.zeros(3)
+    #     stepsize = 0.1 * np.ones(3)
+    # elif model == "CompressedFilmRuehl":
+    #     params = np.zeros(4)
+    #     stepsize = 0.1 * np.ones(4)
+    # else:
+    #     print("error model name not recognized")
+
+    # if model == "CompressedFilmOvadnevaite":
+    #     params = [-1.0, -0.5]  # [0.5, 0.2]
+    #     stepsize = [0.1, 0.05]
+    # elif model == "SzyszkowskiLangmuir":
+    #     params = [75, -14, 3.2]  # [25, -11.4, 3.7]
+    #     stepsize = [0.5, 0.1, 0.05]
+    # elif model == "CompressedFilmRuehl":
+    #     params = [75, -14, 3.2, 1.0]  # [15, -11.5, 3.5, 1.0]
+    #     stepsize = [0.5, 0.1, 0.05, 0.05]
+    # else:
+    #     print("error model name not recognized")
 
     FORMULAE = Formulae(constants=SINGER_CONSTS)
 
