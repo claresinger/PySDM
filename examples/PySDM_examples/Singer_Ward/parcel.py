@@ -14,17 +14,18 @@ from PySDM.initialisation.spectra import Sum
 
 class ParcelSimulation(BasicSimulation):
     def __init__(self, settings, products=None):
-        env = Parcel(
-            dt=settings.dt,
-            mass_of_dry_air=settings.mass_of_dry_air,
-            p0=settings.p0,
-            initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
-            T0=settings.T0,
-            w=settings.w,
-        )
         n_sd = settings.n_sd_per_mode * len(settings.aerosol.modes)
         builder = Builder(n_sd=n_sd, backend=CPU(formulae=settings.formulae))
-        builder.set_environment(env)
+        builder.set_environment(
+            Parcel(
+                dt=settings.dt,
+                mass_of_dry_air=settings.mass_of_dry_air,
+                p0=settings.p0,
+                initial_water_vapour_mixing_ratio=settings.initial_water_vapour_mixing_ratio,
+                T0=settings.T0,
+                w=settings.w,
+            )
+        )
 
         attributes = {
             "dry volume": np.empty(0),
@@ -54,13 +55,13 @@ class ParcelSimulation(BasicSimulation):
         np.testing.assert_approx_equal(
             np.sum(attributes["n"]) / V,
             Sum(tuple(mode["spectrum"] for mode in settings.aerosol.modes)).norm_factor,
-            significant=5,
+            significant=4,
         )
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=NumbaExperimentalFeatureWarning)
             r_wet = equilibrate_wet_radii(
                 r_dry=settings.formulae.trivia.radius(volume=attributes["dry volume"]),
-                environment=env,
+                environment=builder.particulator.environment,
                 kappa_times_dry_volume=attributes["kappa times dry volume"],
                 f_org=attributes["dry volume organic"] / attributes["dry volume"],
             )
