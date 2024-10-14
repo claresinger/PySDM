@@ -56,6 +56,7 @@ class AerosolBetaCaryophylleneDark(DryAerosolMixture):
         )
 
     color = "red"
+    shortname = "bcary_dark"
 
 
 class AerosolBetaCaryophylleneLight(DryAerosolMixture):
@@ -107,6 +108,7 @@ class AerosolBetaCaryophylleneLight(DryAerosolMixture):
         )
 
     color = "orange"
+    shortname = "bcary_light"
 
 
 @strict
@@ -159,6 +161,7 @@ class AerosolAlphaPineneDark(DryAerosolMixture):
         )
 
     color = "green"
+    shortname = "apinene_dark"
 
 
 @strict
@@ -211,3 +214,4 @@ class AerosolAlphaPineneLight(DryAerosolMixture):
         )
 
     color = "lightgreen"
+    shortname = "apinine_light"
