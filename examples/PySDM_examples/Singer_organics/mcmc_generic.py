@@ -12,14 +12,18 @@ from open_atmos_jupyter_utils import show_plot
 from PySDM.physics import si
 from PySDM import Formulae
 
-from PySDM_examples.Singer_Ward.aerosol import (
+from PySDM_examples.Singer_organics.aerosol import (
     AerosolAlphaPineneDark,
     AerosolAlphaPineneLight,
     AerosolBetaCaryophylleneDark,
     AerosolBetaCaryophylleneLight,
 )
-from PySDM_examples.Singer_Ward.kappa_mcmc import MCMC, param_transform, model_options
-from PySDM_examples.Singer_Ward.constants_def import SINGER_CONSTS, plot_names
+from PySDM_examples.Singer_organics.kappa_mcmc import (
+    MCMC,
+    param_transform,
+    model_options,
+)
+from PySDM_examples.Singer_organics.constants_def import SINGER_CONSTS, plot_names
 
 
 def mcmc_generic(

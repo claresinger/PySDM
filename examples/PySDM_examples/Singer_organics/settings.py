@@ -5,7 +5,7 @@ from PySDM import Formulae
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
 from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
-from PySDM_examples.Singer_Ward.constants_def import SINGER_CONSTS
+from PySDM_examples.Singer_organics.constants_def import SINGER_CONSTS
 
 
 @strict

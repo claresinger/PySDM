@@ -1,7 +1,7 @@
 import numpy as np
 from PySDM.physics import si
-from PySDM_examples.Singer_Ward.kappa_mcmc import param_transform
-from PySDM_examples.Singer_Ward.constants_def import plot_names
+from PySDM_examples.Singer_organics.kappa_mcmc import param_transform
+from PySDM_examples.Singer_organics.constants_def import plot_names
 
 
 def get_median_mcmc_values(model, aerosol, Ntotal=1000, Ncut=500):

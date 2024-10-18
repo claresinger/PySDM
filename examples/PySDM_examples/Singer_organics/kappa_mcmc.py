@@ -9,7 +9,7 @@ from PySDM.backends.impl_numba.toms748 import toms748_solve
 
 from PySDM import Formulae
 from PySDM.physics import si
-from PySDM_examples.Singer_Ward.constants_def import SINGER_CONSTS
+from PySDM_examples.Singer_organics.constants_def import SINGER_CONSTS
 
 
 """
