@@ -115,6 +115,8 @@ def run_parcel(
     error = np.zeros(len(aerosol.modes))
     activated_fraction_S = np.zeros(len(aerosol.modes))
     activated_fraction_V = np.zeros(len(aerosol.modes))
+    Nd_S = 0
+    Nd_V = 0
     for j, mode in enumerate(aerosol.modes):
         activated_drops_j_S = 0
         activated_drops_j_V = 0
@@ -133,6 +135,12 @@ def run_parcel(
         error[j] = max_multiplicity_j / sum_multiplicity_j
         activated_fraction_S[j] = activated_drops_j_S / sum_multiplicity_j
         activated_fraction_V[j] = activated_drops_j_V / sum_multiplicity_j
+        Nd_S += activated_drops_j_S / (
+            builder.particulator.environment.mesh.dv * 1e6
+        )  # cm-3
+        Nd_V += activated_drops_j_V / (
+            builder.particulator.environment.mesh.dv * 1e6
+        )  # cm-3
 
     Output = namedtuple(
         "Output",
@@ -143,6 +151,8 @@ def run_parcel(
             "activated_fraction_S",
             "activated_fraction_V",
             "error",
+            "Nd_S",
+            "Nd_V",
             "dry_radius_bin_edges",
             "dry_spectrum",
         ],
@@ -154,6 +164,8 @@ def run_parcel(
         activated_fraction_S=activated_fraction_S,
         activated_fraction_V=activated_fraction_V,
         error=error,
+        Nd_S=Nd_S,
+        Nd_V=Nd_V,
         dry_radius_bin_edges=dry_radius_bin_edges,
         dry_spectrum=dry_spectrum,
     )
