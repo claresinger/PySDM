@@ -25,7 +25,6 @@ setup(
     description="Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry"
     " cloud microphysics package with box, parcel & 1D/2D prescribed-flow"
     " examples in Python, Julia and Matlab",
-    use_scm_version={"local_scheme": lambda _: "", "version_scheme": "post-release"},
     install_requires=[
         "ThrustRTC==0.3.20",
         "CURandRTC" + ("==0.1.6" if CI else ">=0.1.2"),
@@ -72,15 +71,14 @@ setup(
             else ""
         ),
         "pyevtk" + ("==1.2.0" if CI else ""),
-        "flexparser<0.4",
     ],
     extras_require={
         "tests": [
             "matplotlib",
             "pytest",
             "pytest-timeout",
-            "PyPartMC==1.3.6",
         ]
+        + (["PyPartMC==1.3.6"] if sys.version_info < (3, 12) else [])  # TODO #1410
         + (
             [
                 "pywinpty" + ("==0.5.7" if CI else ""),
