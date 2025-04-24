@@ -80,7 +80,7 @@ setup(
             "PySDM-examples",
             "open-atmos-jupyter-utils>=v1.2.0",
         ]
-        + (["PyPartMC==1.3.6"] if sys.version_info < (3, 12) else [])  # TODO #1410
+        + (["PyPartMC==1.7.1"] if sys.version_info < (3, 12) else [])  # TODO #1410
         + (
             [
                 "pywinpty" + ("==0.5.7" if CI else ""),
