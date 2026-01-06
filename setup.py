@@ -70,7 +70,7 @@ optional_dependencies = {
     + (
         [
             "pyrcel",
-            "jupyter-core<5.0.0",
+            "jupyter-core<6.0.0",
             "ipywidgets!=8.0.3",
         ]
     )
