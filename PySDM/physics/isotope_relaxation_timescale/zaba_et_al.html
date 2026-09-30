@@ -77,6 +77,9 @@
                         <li>
                                 <a class="function" href="#ZabaEtAl.tau">tau</a>
                         </li>
+                        <li>
+                                <a class="function" href="#ZabaEtAl.bolin_number">bolin_number</a>
+                        </li>
                 </ul>
 
             </li>
@@ -103,7 +106,7 @@
 
                         <label class="view-source-button" for="mod-zaba_et_al-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;isotope e-folding timescale based on Fick&#39;s first law and Fourier&#39;s law&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">"""isotope e-folding timescale based on Fick's first law and Fourier's law"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="k">class</span><span class="w"> </span><span class="nc">ZabaEtAl</span><span class="p">:</span>  <span class="c1"># pylint: disable=too-few-public-methods</span>
@@ -112,9 +115,9 @@
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span>
-</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="n">const</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
-</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments, unused-argument</span>
-</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;relative growth of heavy isotope as a function of mass&quot;&quot;&quot;</span>
+</span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a>        <span class="n">const</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="w">        </span><span class="sd">"""relative growth of heavy isotope as a function of mass"""</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>            <span class="mi">3</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a>            <span class="o">*</span> <span class="n">rho_s</span>
@@ -124,6 +127,33 @@
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a>            <span class="o">*</span> <span class="n">D_iso</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>            <span class="o">*</span> <span class="p">(</span><span class="n">S</span> <span class="o">*</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">R_vap</span> <span class="o">/</span> <span class="n">R_liq</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">S</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">D</span> <span class="o">*</span> <span class="n">Fk</span><span class="p">))</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos">21</span></a>        <span class="p">)</span>
+</span><span id="L-22"><a href="#L-22"><span class="linenos">22</span></a>
+</span><span id="L-23"><a href="#L-23"><span class="linenos">23</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="L-24"><a href="#L-24"><span class="linenos">24</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">bolin_number</span><span class="p">(</span>
+</span><span id="L-25"><a href="#L-25"><span class="linenos">25</span></a>        <span class="n">relative_humidity</span><span class="p">,</span>
+</span><span id="L-26"><a href="#L-26"><span class="linenos">26</span></a>        <span class="n">D_ratio_heavy_to_light</span><span class="p">,</span>
+</span><span id="L-27"><a href="#L-27"><span class="linenos">27</span></a>        <span class="n">alpha</span><span class="p">,</span>
+</span><span id="L-28"><a href="#L-28"><span class="linenos">28</span></a>        <span class="n">R_vap</span><span class="p">,</span>
+</span><span id="L-29"><a href="#L-29"><span class="linenos">29</span></a>        <span class="n">R_liq</span><span class="p">,</span>
+</span><span id="L-30"><a href="#L-30"><span class="linenos">30</span></a>        <span class="n">Fd</span><span class="p">,</span>
+</span><span id="L-31"><a href="#L-31"><span class="linenos">31</span></a>        <span class="n">Fk</span><span class="p">,</span>
+</span><span id="L-32"><a href="#L-32"><span class="linenos">32</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
+</span><span id="L-33"><a href="#L-33"><span class="linenos">33</span></a>        <span class="c1"># TODO #1809 Numba can't compile when * in bolin_number</span>
+</span><span id="L-34"><a href="#L-34"><span class="linenos">34</span></a><span class="w">        </span><span class="sd">"""Heavy to total isotopic-timescales ratio (tau_heavy/tau_total).</span>
+</span><span id="L-35"><a href="#L-35"><span class="linenos">35</span></a>
+</span><span id="L-36"><a href="#L-36"><span class="linenos">36</span></a><span class="sd">        Returns:</span>
+</span><span id="L-37"><a href="#L-37"><span class="linenos">37</span></a><span class="sd">            tau_heavy/tau_total = (relative total mass change)/(relative heavy mass change)</span>
+</span><span id="L-38"><a href="#L-38"><span class="linenos">38</span></a><span class="sd">        """</span>
+</span><span id="L-39"><a href="#L-39"><span class="linenos">39</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="L-40"><a href="#L-40"><span class="linenos">40</span></a>            <span class="n">alpha</span>
+</span><span id="L-41"><a href="#L-41"><span class="linenos">41</span></a>            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">relative_humidity</span><span class="p">)</span>
+</span><span id="L-42"><a href="#L-42"><span class="linenos">42</span></a>            <span class="o">/</span> <span class="n">D_ratio_heavy_to_light</span>
+</span><span id="L-43"><a href="#L-43"><span class="linenos">43</span></a>            <span class="o">/</span> <span class="p">(</span>
+</span><span id="L-44"><a href="#L-44"><span class="linenos">44</span></a>                <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">Fk</span> <span class="o">/</span> <span class="n">Fd</span><span class="p">)</span> <span class="o">*</span> <span class="n">relative_humidity</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">R_vap</span> <span class="o">/</span> <span class="n">R_liq</span><span class="p">)</span>
+</span><span id="L-45"><a href="#L-45"><span class="linenos">45</span></a>                <span class="o">-</span> <span class="n">relative_humidity</span>
+</span><span id="L-46"><a href="#L-46"><span class="linenos">46</span></a>                <span class="o">+</span> <span class="mi">1</span>
+</span><span id="L-47"><a href="#L-47"><span class="linenos">47</span></a>            <span class="p">)</span>
+</span><span id="L-48"><a href="#L-48"><span class="linenos">48</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -145,9 +175,9 @@
 </span><span id="ZabaEtAl-8"><a href="#ZabaEtAl-8"><span class="linenos"> 8</span></a>
 </span><span id="ZabaEtAl-9"><a href="#ZabaEtAl-9"><span class="linenos"> 9</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="ZabaEtAl-10"><a href="#ZabaEtAl-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span>
-</span><span id="ZabaEtAl-11"><a href="#ZabaEtAl-11"><span class="linenos">11</span></a>        <span class="n">const</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
-</span><span id="ZabaEtAl-12"><a href="#ZabaEtAl-12"><span class="linenos">12</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments, unused-argument</span>
-</span><span id="ZabaEtAl-13"><a href="#ZabaEtAl-13"><span class="linenos">13</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;relative growth of heavy isotope as a function of mass&quot;&quot;&quot;</span>
+</span><span id="ZabaEtAl-11"><a href="#ZabaEtAl-11"><span class="linenos">11</span></a>        <span class="n">const</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
+</span><span id="ZabaEtAl-12"><a href="#ZabaEtAl-12"><span class="linenos">12</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="ZabaEtAl-13"><a href="#ZabaEtAl-13"><span class="linenos">13</span></a><span class="w">        </span><span class="sd">"""relative growth of heavy isotope as a function of mass"""</span>
 </span><span id="ZabaEtAl-14"><a href="#ZabaEtAl-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span>
 </span><span id="ZabaEtAl-15"><a href="#ZabaEtAl-15"><span class="linenos">15</span></a>            <span class="mi">3</span>
 </span><span id="ZabaEtAl-16"><a href="#ZabaEtAl-16"><span class="linenos">16</span></a>            <span class="o">*</span> <span class="n">rho_s</span>
@@ -157,6 +187,33 @@
 </span><span id="ZabaEtAl-20"><a href="#ZabaEtAl-20"><span class="linenos">20</span></a>            <span class="o">*</span> <span class="n">D_iso</span>
 </span><span id="ZabaEtAl-21"><a href="#ZabaEtAl-21"><span class="linenos">21</span></a>            <span class="o">*</span> <span class="p">(</span><span class="n">S</span> <span class="o">*</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">R_vap</span> <span class="o">/</span> <span class="n">R_liq</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">S</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">D</span> <span class="o">*</span> <span class="n">Fk</span><span class="p">))</span>
 </span><span id="ZabaEtAl-22"><a href="#ZabaEtAl-22"><span class="linenos">22</span></a>        <span class="p">)</span>
+</span><span id="ZabaEtAl-23"><a href="#ZabaEtAl-23"><span class="linenos">23</span></a>
+</span><span id="ZabaEtAl-24"><a href="#ZabaEtAl-24"><span class="linenos">24</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="ZabaEtAl-25"><a href="#ZabaEtAl-25"><span class="linenos">25</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">bolin_number</span><span class="p">(</span>
+</span><span id="ZabaEtAl-26"><a href="#ZabaEtAl-26"><span class="linenos">26</span></a>        <span class="n">relative_humidity</span><span class="p">,</span>
+</span><span id="ZabaEtAl-27"><a href="#ZabaEtAl-27"><span class="linenos">27</span></a>        <span class="n">D_ratio_heavy_to_light</span><span class="p">,</span>
+</span><span id="ZabaEtAl-28"><a href="#ZabaEtAl-28"><span class="linenos">28</span></a>        <span class="n">alpha</span><span class="p">,</span>
+</span><span id="ZabaEtAl-29"><a href="#ZabaEtAl-29"><span class="linenos">29</span></a>        <span class="n">R_vap</span><span class="p">,</span>
+</span><span id="ZabaEtAl-30"><a href="#ZabaEtAl-30"><span class="linenos">30</span></a>        <span class="n">R_liq</span><span class="p">,</span>
+</span><span id="ZabaEtAl-31"><a href="#ZabaEtAl-31"><span class="linenos">31</span></a>        <span class="n">Fd</span><span class="p">,</span>
+</span><span id="ZabaEtAl-32"><a href="#ZabaEtAl-32"><span class="linenos">32</span></a>        <span class="n">Fk</span><span class="p">,</span>
+</span><span id="ZabaEtAl-33"><a href="#ZabaEtAl-33"><span class="linenos">33</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
+</span><span id="ZabaEtAl-34"><a href="#ZabaEtAl-34"><span class="linenos">34</span></a>        <span class="c1"># TODO #1809 Numba can't compile when * in bolin_number</span>
+</span><span id="ZabaEtAl-35"><a href="#ZabaEtAl-35"><span class="linenos">35</span></a><span class="w">        </span><span class="sd">"""Heavy to total isotopic-timescales ratio (tau_heavy/tau_total).</span>
+</span><span id="ZabaEtAl-36"><a href="#ZabaEtAl-36"><span class="linenos">36</span></a>
+</span><span id="ZabaEtAl-37"><a href="#ZabaEtAl-37"><span class="linenos">37</span></a><span class="sd">        Returns:</span>
+</span><span id="ZabaEtAl-38"><a href="#ZabaEtAl-38"><span class="linenos">38</span></a><span class="sd">            tau_heavy/tau_total = (relative total mass change)/(relative heavy mass change)</span>
+</span><span id="ZabaEtAl-39"><a href="#ZabaEtAl-39"><span class="linenos">39</span></a><span class="sd">        """</span>
+</span><span id="ZabaEtAl-40"><a href="#ZabaEtAl-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="ZabaEtAl-41"><a href="#ZabaEtAl-41"><span class="linenos">41</span></a>            <span class="n">alpha</span>
+</span><span id="ZabaEtAl-42"><a href="#ZabaEtAl-42"><span class="linenos">42</span></a>            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">relative_humidity</span><span class="p">)</span>
+</span><span id="ZabaEtAl-43"><a href="#ZabaEtAl-43"><span class="linenos">43</span></a>            <span class="o">/</span> <span class="n">D_ratio_heavy_to_light</span>
+</span><span id="ZabaEtAl-44"><a href="#ZabaEtAl-44"><span class="linenos">44</span></a>            <span class="o">/</span> <span class="p">(</span>
+</span><span id="ZabaEtAl-45"><a href="#ZabaEtAl-45"><span class="linenos">45</span></a>                <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">Fk</span> <span class="o">/</span> <span class="n">Fd</span><span class="p">)</span> <span class="o">*</span> <span class="n">relative_humidity</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">R_vap</span> <span class="o">/</span> <span class="n">R_liq</span><span class="p">)</span>
+</span><span id="ZabaEtAl-46"><a href="#ZabaEtAl-46"><span class="linenos">46</span></a>                <span class="o">-</span> <span class="n">relative_humidity</span>
+</span><span id="ZabaEtAl-47"><a href="#ZabaEtAl-47"><span class="linenos">47</span></a>                <span class="o">+</span> <span class="mi">1</span>
+</span><span id="ZabaEtAl-48"><a href="#ZabaEtAl-48"><span class="linenos">48</span></a>            <span class="p">)</span>
+</span><span id="ZabaEtAl-49"><a href="#ZabaEtAl-49"><span class="linenos">49</span></a>        <span class="p">)</span>
 </span></pre></div>
 
 
@@ -186,7 +243,7 @@
                     <div class="decorator decorator-staticmethod">@staticmethod</div>
 
         <span class="def">def</span>
-        <span class="name">tau</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="n">rho_s</span>, </span><span class="param"><span class="n">radius</span>, </span><span class="param"><span class="n">D_iso</span>, </span><span class="param"><span class="n">D</span>, </span><span class="param"><span class="n">S</span>, </span><span class="param"><span class="n">R_liq</span>, </span><span class="param"><span class="n">alpha</span>, </span><span class="param"><span class="n">R_vap</span>, </span><span class="param"><span class="n">Fk</span></span><span class="return-annotation">):</span></span>
+        <span class="name">tau</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">const</span>, </span><span class="param"><span class="o">*</span>, </span><span class="param"><span class="n">rho_s</span>, </span><span class="param"><span class="n">radius</span>, </span><span class="param"><span class="n">D_iso</span>, </span><span class="param"><span class="n">D</span>, </span><span class="param"><span class="n">S</span>, </span><span class="param"><span class="n">R_liq</span>, </span><span class="param"><span class="n">alpha</span>, </span><span class="param"><span class="n">R_vap</span>, </span><span class="param"><span class="n">Fk</span></span><span class="return-annotation">):</span></span>
 
                 <label class="view-source-button" for="ZabaEtAl.tau-view-source"><span>View Source</span></label>
 
@@ -194,9 +251,9 @@
     <a class="headerlink" href="#ZabaEtAl.tau"></a>
             <div class="pdoc-code codehilite"><pre><span></span><span id="ZabaEtAl.tau-9"><a href="#ZabaEtAl.tau-9"><span class="linenos"> 9</span></a>    <span class="nd">@staticmethod</span>
 </span><span id="ZabaEtAl.tau-10"><a href="#ZabaEtAl.tau-10"><span class="linenos">10</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">tau</span><span class="p">(</span>
-</span><span id="ZabaEtAl.tau-11"><a href="#ZabaEtAl.tau-11"><span class="linenos">11</span></a>        <span class="n">const</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
-</span><span id="ZabaEtAl.tau-12"><a href="#ZabaEtAl.tau-12"><span class="linenos">12</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments, unused-argument</span>
-</span><span id="ZabaEtAl.tau-13"><a href="#ZabaEtAl.tau-13"><span class="linenos">13</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;relative growth of heavy isotope as a function of mass&quot;&quot;&quot;</span>
+</span><span id="ZabaEtAl.tau-11"><a href="#ZabaEtAl.tau-11"><span class="linenos">11</span></a>        <span class="n">const</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">rho_s</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">D_iso</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">R_liq</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">R_vap</span><span class="p">,</span> <span class="n">Fk</span>
+</span><span id="ZabaEtAl.tau-12"><a href="#ZabaEtAl.tau-12"><span class="linenos">12</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+</span><span id="ZabaEtAl.tau-13"><a href="#ZabaEtAl.tau-13"><span class="linenos">13</span></a><span class="w">        </span><span class="sd">"""relative growth of heavy isotope as a function of mass"""</span>
 </span><span id="ZabaEtAl.tau-14"><a href="#ZabaEtAl.tau-14"><span class="linenos">14</span></a>        <span class="k">return</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span>
 </span><span id="ZabaEtAl.tau-15"><a href="#ZabaEtAl.tau-15"><span class="linenos">15</span></a>            <span class="mi">3</span>
 </span><span id="ZabaEtAl.tau-16"><a href="#ZabaEtAl.tau-16"><span class="linenos">16</span></a>            <span class="o">*</span> <span class="n">rho_s</span>
@@ -210,6 +267,55 @@
 
 
             <div class="docstring"><p>relative growth of heavy isotope as a function of mass</p>
+</div>
+
+
+                            </div>
+                            <div id="ZabaEtAl.bolin_number" class="classattr">
+                                        <input id="ZabaEtAl.bolin_number-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+                    <div class="decorator decorator-staticmethod">@staticmethod</div>
+
+        <span class="def">def</span>
+        <span class="name">bolin_number</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">relative_humidity</span>,</span><span class="param">	<span class="n">D_ratio_heavy_to_light</span>,</span><span class="param">	<span class="n">alpha</span>,</span><span class="param">	<span class="n">R_vap</span>,</span><span class="param">	<span class="n">R_liq</span>,</span><span class="param">	<span class="n">Fd</span>,</span><span class="param">	<span class="n">Fk</span></span><span class="return-annotation">):</span></span>
+
+                <label class="view-source-button" for="ZabaEtAl.bolin_number-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#ZabaEtAl.bolin_number"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="ZabaEtAl.bolin_number-24"><a href="#ZabaEtAl.bolin_number-24"><span class="linenos">24</span></a>    <span class="nd">@staticmethod</span>
+</span><span id="ZabaEtAl.bolin_number-25"><a href="#ZabaEtAl.bolin_number-25"><span class="linenos">25</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">bolin_number</span><span class="p">(</span>
+</span><span id="ZabaEtAl.bolin_number-26"><a href="#ZabaEtAl.bolin_number-26"><span class="linenos">26</span></a>        <span class="n">relative_humidity</span><span class="p">,</span>
+</span><span id="ZabaEtAl.bolin_number-27"><a href="#ZabaEtAl.bolin_number-27"><span class="linenos">27</span></a>        <span class="n">D_ratio_heavy_to_light</span><span class="p">,</span>
+</span><span id="ZabaEtAl.bolin_number-28"><a href="#ZabaEtAl.bolin_number-28"><span class="linenos">28</span></a>        <span class="n">alpha</span><span class="p">,</span>
+</span><span id="ZabaEtAl.bolin_number-29"><a href="#ZabaEtAl.bolin_number-29"><span class="linenos">29</span></a>        <span class="n">R_vap</span><span class="p">,</span>
+</span><span id="ZabaEtAl.bolin_number-30"><a href="#ZabaEtAl.bolin_number-30"><span class="linenos">30</span></a>        <span class="n">R_liq</span><span class="p">,</span>
+</span><span id="ZabaEtAl.bolin_number-31"><a href="#ZabaEtAl.bolin_number-31"><span class="linenos">31</span></a>        <span class="n">Fd</span><span class="p">,</span>
+</span><span id="ZabaEtAl.bolin_number-32"><a href="#ZabaEtAl.bolin_number-32"><span class="linenos">32</span></a>        <span class="n">Fk</span><span class="p">,</span>
+</span><span id="ZabaEtAl.bolin_number-33"><a href="#ZabaEtAl.bolin_number-33"><span class="linenos">33</span></a>    <span class="p">):</span>  <span class="c1"># pylint: disable=too-many-arguments,too-many-positional-arguments</span>
+</span><span id="ZabaEtAl.bolin_number-34"><a href="#ZabaEtAl.bolin_number-34"><span class="linenos">34</span></a>        <span class="c1"># TODO #1809 Numba can't compile when * in bolin_number</span>
+</span><span id="ZabaEtAl.bolin_number-35"><a href="#ZabaEtAl.bolin_number-35"><span class="linenos">35</span></a><span class="w">        </span><span class="sd">"""Heavy to total isotopic-timescales ratio (tau_heavy/tau_total).</span>
+</span><span id="ZabaEtAl.bolin_number-36"><a href="#ZabaEtAl.bolin_number-36"><span class="linenos">36</span></a>
+</span><span id="ZabaEtAl.bolin_number-37"><a href="#ZabaEtAl.bolin_number-37"><span class="linenos">37</span></a><span class="sd">        Returns:</span>
+</span><span id="ZabaEtAl.bolin_number-38"><a href="#ZabaEtAl.bolin_number-38"><span class="linenos">38</span></a><span class="sd">            tau_heavy/tau_total = (relative total mass change)/(relative heavy mass change)</span>
+</span><span id="ZabaEtAl.bolin_number-39"><a href="#ZabaEtAl.bolin_number-39"><span class="linenos">39</span></a><span class="sd">        """</span>
+</span><span id="ZabaEtAl.bolin_number-40"><a href="#ZabaEtAl.bolin_number-40"><span class="linenos">40</span></a>        <span class="k">return</span> <span class="p">(</span>
+</span><span id="ZabaEtAl.bolin_number-41"><a href="#ZabaEtAl.bolin_number-41"><span class="linenos">41</span></a>            <span class="n">alpha</span>
+</span><span id="ZabaEtAl.bolin_number-42"><a href="#ZabaEtAl.bolin_number-42"><span class="linenos">42</span></a>            <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">relative_humidity</span><span class="p">)</span>
+</span><span id="ZabaEtAl.bolin_number-43"><a href="#ZabaEtAl.bolin_number-43"><span class="linenos">43</span></a>            <span class="o">/</span> <span class="n">D_ratio_heavy_to_light</span>
+</span><span id="ZabaEtAl.bolin_number-44"><a href="#ZabaEtAl.bolin_number-44"><span class="linenos">44</span></a>            <span class="o">/</span> <span class="p">(</span>
+</span><span id="ZabaEtAl.bolin_number-45"><a href="#ZabaEtAl.bolin_number-45"><span class="linenos">45</span></a>                <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">Fk</span> <span class="o">/</span> <span class="n">Fd</span><span class="p">)</span> <span class="o">*</span> <span class="n">relative_humidity</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">R_vap</span> <span class="o">/</span> <span class="n">R_liq</span><span class="p">)</span>
+</span><span id="ZabaEtAl.bolin_number-46"><a href="#ZabaEtAl.bolin_number-46"><span class="linenos">46</span></a>                <span class="o">-</span> <span class="n">relative_humidity</span>
+</span><span id="ZabaEtAl.bolin_number-47"><a href="#ZabaEtAl.bolin_number-47"><span class="linenos">47</span></a>                <span class="o">+</span> <span class="mi">1</span>
+</span><span id="ZabaEtAl.bolin_number-48"><a href="#ZabaEtAl.bolin_number-48"><span class="linenos">48</span></a>            <span class="p">)</span>
+</span><span id="ZabaEtAl.bolin_number-49"><a href="#ZabaEtAl.bolin_number-49"><span class="linenos">49</span></a>        <span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Heavy to total isotopic-timescales ratio (tau_heavy/tau_total).</p>
+
+<p>Returns:
+    tau_heavy/tau_total = (relative total mass change)/(relative heavy mass change)</p>
 </div>
 
 

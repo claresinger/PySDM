@@ -103,6 +103,7 @@
                     <li><a href="physics/state_variable_triplet.html">state_variable_triplet</a></li>
                     <li><a href="physics/surface_tension.html">surface_tension</a></li>
                     <li><a href="physics/terminal_velocity.html">terminal_velocity</a></li>
+                    <li><a href="physics/terminal_velocity_ice.html">terminal_velocity_ice</a></li>
                     <li><a href="physics/trivia.html">trivia</a></li>
                     <li><a href="physics/ventilation.html">ventilation</a></li>
             </ul>
@@ -145,7 +146,7 @@ within unit tests (disable by default, no runtime overhead);</li>
 
                         <label class="view-source-button" for="mod-physics-view-source"><span>View Source</span></label>
 
-                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">&quot;&quot;&quot;</span>
+                        <div class="pdoc-code codehilite"><pre><span></span><span id="L-1"><a href="#L-1"><span class="linenos"> 1</span></a><span class="sd">"""</span>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">Physical constants and formulae (mostly one-liners)</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">  that can be automatically either njit-ted or translated to C (in contrast to</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a><span class="sd">  more complex code that resides in backends). Note that any code here should</span>
@@ -161,7 +162,7 @@ within unit tests (disable by default, no runtime overhead);</li>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a><span class="sd">    within unit tests (disable by default, no runtime overhead);</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="sd">  - last but not least, it requires all the constants to be named</span>
 </span><span id="L-16"><a href="#L-16"><span class="linenos">16</span></a><span class="sd">    (thus resulting in more readable, and more reusable code).</span>
-</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="L-17"><a href="#L-17"><span class="linenos">17</span></a><span class="sd">"""</span>
 </span><span id="L-18"><a href="#L-18"><span class="linenos">18</span></a>
 </span><span id="L-19"><a href="#L-19"><span class="linenos">19</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 </span><span id="L-20"><a href="#L-20"><span class="linenos">20</span></a>    <span class="n">diffusion_coordinate</span><span class="p">,</span>
@@ -199,9 +200,10 @@ within unit tests (disable by default, no runtime overhead);</li>
 </span><span id="L-52"><a href="#L-52"><span class="linenos">52</span></a>    <span class="n">ventilation</span><span class="p">,</span>
 </span><span id="L-53"><a href="#L-53"><span class="linenos">53</span></a>    <span class="n">air_dynamic_viscosity</span><span class="p">,</span>
 </span><span id="L-54"><a href="#L-54"><span class="linenos">54</span></a>    <span class="n">terminal_velocity</span><span class="p">,</span>
-</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="n">bulk_phase_partitioning</span><span class="p">,</span>
-</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a><span class="p">)</span>
-</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_to</span><span class="p">,</span> <span class="n">in_unit</span><span class="p">,</span> <span class="n">si</span>
+</span><span id="L-55"><a href="#L-55"><span class="linenos">55</span></a>    <span class="n">terminal_velocity_ice</span><span class="p">,</span>
+</span><span id="L-56"><a href="#L-56"><span class="linenos">56</span></a>    <span class="n">bulk_phase_partitioning</span><span class="p">,</span>
+</span><span id="L-57"><a href="#L-57"><span class="linenos">57</span></a><span class="p">)</span>
+</span><span id="L-58"><a href="#L-58"><span class="linenos">58</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">convert_to</span><span class="p">,</span> <span class="n">in_unit</span><span class="p">,</span> <span class="n">si</span>
 </span></pre></div>
 
 
